@@ -1,0 +1,11 @@
+{% for name, field in model.var.iteritems() %}
+{% if field.indexed %}
+{% if field.choices %}
+{{"{{"}} object.get_{{name}}_display() {{"}}"}}
+{% elif field.type == 'ForeignKey' %}
+{{"{{"}} object.{{name}} {{"}}"}}
+{% else %}
+{{"{{"}} object.{{name}} {{"}}"}}
+{% endif %}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,92 @@
+from django.shortcuts import render
+from django.views.generic.detail import DetailView
+from django.views.generic import ListView
+from rest_framework import generics
+
+from haystack.generic_views import FacetedSearchView as BaseFacetedSearchView
+from haystack.forms import FacetedSearchForm as BaseFacetedSearchForm
+
+from .serializers import *
+from .models import * 
+
+class FacetedSearchForm(BaseFacetedSearchForm): 
+
+    def no_query_found(self):
+        return self.searchqueryset.all()
+
+class FacetedSearchView(BaseFacetedSearchView):
+    form_class = FacetedSearchForm
+    facet_fields = ['facet_model_name',
+            {%- for class_name, model in class_models.iteritems() -%}
+            {%- for name, field in model.var.iteritems() -%}
+            {%- if field.faceted -%}
+            '{{name}}',
+            {%- endif -%}
+            {%- endfor -%}
+            {%- endfor -%}
+            ]
+    template_name = 'search/search.html'
+    context_object_name = 'search'
+
+    def get_queryset(self):
+        qs = super(BaseFacetedSearchView, self).get_queryset()
+        for field in self.facet_fields:
+            qs = qs.facet(field, sort='index')
+        return qs
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super(FacetedSearchView, self).get_form_kwargs()
+        if self.request.method == 'GET':
+            kwargs.update({
+                'data': self.request.GET,
+            })
+        return kwargs
+
+class ExcavationList(ListView):
+        template_name = "field_list.html"
+        
+        def get_queryset(self):
+            #return ExcavationFeatureFormV3.objects.all()
+            reqtype = self.request.GET.get('type')
+    {% for class_name, model in class_models.iteritems() %}
+        if reqtype == '{{class_name}}':
+                return {{model.meta.class}}.objects.all()
+    {% endfor %}
+        
+        def get_context_data(self, **kwargs):
+            context = super(ExcavationList, self).get_context_data(**kwargs)
+            context['model'] = self.request.GET.get('type')
+            return context
+
+{% for class_name, model in class_models.iteritems() %}
+class {{model.meta.class}}DetailView(DetailView):
+
+    template_name = "field_details.html"
+    model = {{model.meta.class}}
+
+    def get_context_data(self, **kwargs):
+        context = super({{model.meta.class}}DetailView, self).get_context_data(**kwargs)
+        return context
+
+class {{model.meta.class}}RestList(generics.ListCreateAPIView):
+  queryset = {{model.meta.class}}.objects.all()
+  serializer_class = {{model.meta.class}}Serializer
+
+class {{model.meta.class}}RestDetails(generics.RetrieveUpdateDestroyAPIView):
+  queryset = {{model.meta.class}}.objects.all()
+  serializer_class = {{model.meta.class}}Serializer
+{% endfor %}
+
+{% for class_name, model in sec_models.iteritems() %}
+class {{model.meta.class}}DetailView(DetailView):
+
+    template_name = "field_details.html"
+    model = {{model.meta.class}}
+
+    def get_context_data(self, **kwargs):
+        context = super({{model.meta.class}}DetailView, self).get_context_data(**kwargs)
+        return context
+{% endfor %}

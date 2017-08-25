@@ -1,0 +1,9 @@
+from rest_framework import serializers
+from .models import * 
+
+{% for class_name, model in class_models.iteritems() %}
+class {{model.meta.class}}Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = {{model.meta.class}}
+        fields = '__all__'
+{% endfor %}

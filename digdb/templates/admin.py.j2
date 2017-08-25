@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+from django.contrib import admin
+from .models import *
+
+{% for sec_class_name, sec_model in sec_models.iteritems() %}
+class {{sec_model.meta.class}}Inline(admin.StackedInline):
+    model = {{sec_model.meta.class}}
+    extra = 0
+    fields = (
+    {% for fieldname, field in sec_model.var.iteritems() %}
+    {% if field.type != 'ForeignKey' %}
+    "{{fieldname}}", 
+    {% endif %}
+    {% endfor %}
+    )
+{% endfor %}
+
+{% for class_name, model in class_models.iteritems() %}
+
+@admin.register({{ model.meta.class }})
+class {{ model.meta.class }}Admin (admin.ModelAdmin):
+{% if model.secondary %}
+    inlines = [
+    {% for sec_class_name, sec_model in model.secondary.iteritems() %}
+        {{sec_models[sec_class_name].meta.class}}Inline,
+    {% endfor %}
+        ]
+{% if model.fieldsets %}
+    fieldsets = (
+        {% for group, fields in model.fieldsets.iteritems() -%} 
+                ("{{ group }}", {
+                "classes": ("",),
+                "fields": {{ fields }},
+                }),
+        {% endfor %}
+        )
+{% endif %}
+{% else %}
+    pass
+
+{% endif %}
+{% endfor %}
+
+{% for class_name, model in sec_models.iteritems() %}
+
+@admin.register({{ model.meta.class }})
+class {{ model.meta.class }}Admin (admin.ModelAdmin):
+{% if model.secondary %}
+    inlines = [
+    {% for sec_class_name, sec_model in model.secondary.iteritems() %}
+        {{sec_models[sec_class_name].meta.class}}Inline,
+    {% endfor %}
+        ]
+{% if model.fieldsets %}
+    fieldsets = (
+        {% for group, fields in model.fieldsets.iteritems() -%} 
+                ("{{ group }}", {
+                "classes": ("",),
+                "fields": {{ fields }},
+                }),
+        {% endfor %}
+        )
+{% endif %}
+{% else %}
+    pass
+
+{% endif %}
+{% endfor %}

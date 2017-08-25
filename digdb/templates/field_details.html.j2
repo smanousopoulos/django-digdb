@@ -1,0 +1,36 @@
+{{ "{%" }} macro decide_field_representation(field) {{ "%}" }}
+  <ul>
+    {{ "{%" }} if field.type == 'list' {{ "%}" }}
+    <li><b>{{ "{{" }} field.label {{ "}}" }}:</b>
+    {{ "{%" }} for item in field.value {{ "%}" }}
+    {{ "{%" }} for sec_field in item {{ "%}" }}
+    {{ "{{" }} decide_field_representation(sec_field) {{ "}}" }}
+    {{ "{%" }} endfor {{ "%}" }}
+    <br />
+    {{ "{%" }} endfor {{ "%}" }}
+    </li>
+    {{ "{%" }} elif field.type == 'unicode' or field.type == 'date' {{ "%}" }}
+    <li><b>{{ "{{" }} field.label {{" }}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
+    {{ "{%" }} elif field.type == 'ImageFieldFile' {{ "%}" }}
+    <li><img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="width:40%" /></li>
+   {{ "{%" }} else {{ "%}" }}
+   <li><b>{{ "{{" }} field.label {{ "}}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
+   {{ "{%" }} endif {{ "%}" }}
+  </ul>
+  {{ "{%" }} endmacro {{ "%}" }}
+
+<h1>{{ "{{" }} object._meta.verbose_name {{ "}}" }}</h1>
+
+{{ "{%" }} if request.user.is_authenticated() {{ "%}" }}
+<a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}'>Edit</a>
+{{ "{%" }} endif {{ "%}" }}
+
+
+<hr/>
+<ul>
+  {{ "{%" }} for f in object.get_all_fields() {{ "%}" }}
+    {{ "{{" }} decide_field_representation(f) {{ "}}" }} 
+  {{ "{%" }} endfor {{ "%}" }}
+</ul>
+
+<a href="/">Back</a>

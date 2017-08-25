@@ -1,0 +1,3 @@
+dist/
+django_digdb.egg-info/
+**/*.pyc

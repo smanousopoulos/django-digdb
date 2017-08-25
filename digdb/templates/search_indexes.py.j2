@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from datetime import datetime
+from haystack import indexes
+from .models import *
+
+# Model index classes
+{% for class_name, model in class_models.iteritems() %}
+class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
+        text = indexes.CharField(document=True, use_template=True)  
+        facet_model_name = indexes.CharField(faceted=True)
+
+{% for name, field in model.var.iteritems() %}
+{% if field.faceted %}
+        {{ name }} = indexes.CharField(model_attr='{{name}}', faceted=True, null=True)
+{% elif field.indexed %}
+        {{ name }} = indexes.CharField(model_attr='{{name}}', null=True)
+{% endif %}
+{% endfor %}
+        
+        def get_model(self):
+            return {{ model.meta.class }}
+
+        #def index_queryset(self, using=None):
+        #        return self.get_model().objects.all()
+
+        def prepare_facet_model_name(self, obj):
+            return "{{ model.meta.label }}"
+
+{% for name, field in model.var.iteritems() %}
+{% if field.faceted %}
+        def prepare_{{ field.name }}(self, obj):
+            return obj.get_field_display("{{ field.name }}").get('value')
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+
+{% for class_name, model in sec_models.iteritems() %}
+class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
+        text = indexes.CharField(document=True, use_template=True)  
+        facet_model_name = indexes.CharField(faceted=True)
+
+{% for name, field in model.var.iteritems() %}
+{% if field.faceted %}
+        {{ name }} = indexes.CharField(model_attr='{{name}}', faceted=True, null=True)
+{% elif field.indexed %}
+        {{ name }} = indexes.CharField(model_attr='{{name}}', null=True)
+{% endif %}
+{% endfor %}
+        
+        def get_model(self):
+                return {{ model.meta.class }}
+
+        def prepare_facet_model_name(self, obj):
+                return "{{ model.meta.label }}"
+{% endfor %}

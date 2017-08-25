@@ -1,0 +1,18 @@
+# -*- coding: utf-8 -*-
+from django.conf.urls import include, url, patterns
+from django.contrib import admin
+
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.FacetedSearchView.as_view(), name='haystack_search'),
+    url(r'^admin/', admin.site.urls, name='admin'),
+{% for class_name, model in class_models.iteritems() %}
+    url(r'^rest/{{class_name}}/$', views.{{model.meta.class}}RestList.as_view()),
+    url(r'^rest/{{class_name}}/(?P<pk>[0-9]+)/$', views.{{model.meta.class}}RestDetails.as_view()),
+    url(r'^{{class_name}}/id/(?P<pk>[-\w]+)/$', views.{{model.meta.class}}DetailView.as_view(), name='{{class_name}}-detail'),
+{% endfor %}
+{% for class_name, model in sec_models.iteritems() %}
+    url(r'^{{class_name}}/id/(?P<pk>[-\w]+)/$', views.{{model.meta.class}}DetailView.as_view(), name='{{class_name}}-detail'),
+{% endfor %}
+]

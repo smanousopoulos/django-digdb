@@ -1,0 +1,78 @@
+<form method="get" action=".">
+  <div>
+    <input id="id_q" type="text" name="q" placeholder="Search" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> <input type="submit" value="Search">
+    </div>
+</form>
+
+<!-- Begin faceting. -->
+
+<!-- class model facet -->
+<div style="float:left; width:20%; padding-right:20px; border-right: 1px #666 solid">
+<h1>Filter</h1>
+{{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
+  <a style="float:right;" href='?'>Clear</a>
+{{ "{%" }} endif {{ "%}" }}
+<hr/>
+<div>
+		<dl>
+      {{ "{%" }} if facets.fields {{ "%}" }}
+      {{ "{%" }} for facet, facet_items in facets.fields.iteritems() {{ "%}" }}
+      <dt>{{ "{{" }} facet {{ "}}" }}</dt>
+      {{ "{%" }} for item in facet_items {{ "%}" }}
+      <dd><a href='?selected_facets={{ "{{" }} facet {{ "}}" }}_exact:{{ "{{" }} item.0 {{ "}}" }}'>{{ "{{" }} item.0 {{ "}}" }}</a> ({{ "{{" }} item.1 {{ "}}" }})</dd>
+      {{ "{%" }} endfor {{ "%}" }}
+      {{ "{%" }} endfor {{ "%}" }}
+      {{ "{%" }} endif {{ "%}" }}
+		</dl>
+</div>
+{#
+{% for model_name, model in class_models.iteritems() %}
+{% for name, field in model.var.iteritems() %}
+{% if field.faceted %}
+<h2>By {{field.verbose_name}}</h2>
+<div>
+		<dl>
+			{{"{%"}} if facets.fields.{{name}} {{"%}"}}
+			<dt>{{field.verbose_name}}</dt>
+			{{"{%"}} for item in facets.fields.{{name}} {{"%}"}}
+			<dd><a href='?selected_facets={{name}}_exact:{{"{{"}} item.0 {{"}}"}}'>{{"{{"}} item.0 {{"}}"}}</a> ({{"{{"}} item.1 {{"}}"}})</dd>
+			{{"{%"}} endfor {{"%}"}}
+			{{"{% else %}"}}
+			<p>No {{field.verbose_name}} facets.</p>
+			{{"{% endif %}"}}
+		</dl>
+</div>
+{% endif %}
+{% endfor %}
+{% endfor %}
+#}
+<!-- End faceting -->
+</div>
+<div style="float:right; width:70%">
+<h1>Search results</h1>
+<hr/>
+<!-- Display results... -->
+{{"{%"}} for result in search {{"%}"}}
+		<div class="search_result">
+			<h3><a href='/{{"{{"}} result.object.get_url() {{"}}"}}'>{{"{{"}} result.object.get_url() {{"}}"}}</a></h3>
+		</div>
+{{" {% else %} "}}
+		<p>Sorry, no results found.</p>
+{{"{% endfor %}"}}
+
+<div class='paginator'>
+
+  {{ "{%" }} set query = request.GET.copy() {{ "%}" }}
+  {{ "{%" }} set page_no = request.GET.get('page') or 1 {{ "%}" }}
+  {{ "{%" }} if paginator.page(page_no).has_previous() {{ "%}" }}
+
+  {{ "{%" }} do query.setlist('page', [paginator.page(page_no).previous_page_number()]) {{ "%}" }}
+  <a style='float:left' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Previous</a>
+  {{ "{%" }} endif {{ "%}" }}
+  {{ "{%" }} if paginator.page(page_no).has_next() {{ "%}" }}
+  {{ "{%" }} do query.setlist('page', [paginator.page(page_no).next_page_number()]) {{ "%}" }}
+  <a style='float:right' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Next</a>
+  {{ "{%" }} endif {{ "%}" }}
+</div>
+
+</div>
