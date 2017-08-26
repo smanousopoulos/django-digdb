@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 {% macro create_model_class(model_name, model) %}
 class {{ model.meta.class }} (models.Model, FieldHelperMixin):
 
@@ -67,11 +69,11 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
         return self.{{ model.meta.default_field }}
 {% endif %}
 {% endmacro %}
-# -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
-from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
 

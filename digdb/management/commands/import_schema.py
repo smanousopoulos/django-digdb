@@ -75,9 +75,9 @@ class Command(BaseCommand):
         self.render_template(admin_template, 'admin.py', output_dir)
         self.render_template(serializers_template, 'serializers.py', output_dir)
 
-        all_search_indexes = self.models.copy()
-        all_search_indexes.update(self.sec_models)
-        for name, model in all_search_indexes.iteritems():
+        all_models = self.models.copy()
+        all_models.update(self.sec_models)
+        for name, model in all_models.iteritems():
             self.render_template(index_text_template, '{0}_text.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
  
         if options['debug']:
@@ -308,8 +308,6 @@ class Command(BaseCommand):
                re.compile(regex)
            except re.error:
                self.stdout.write(self.style.ERROR('Oops, invalid regular expression found in string-regex constraint: %s' % constraint))
-           if REGEX_VALIDATOR not in model['imports']:
-               model['imports'].append(REGEX_VALIDATOR)
            return u'[RegexValidator("{0}", message="{1}")]'.format(regex, message)
 
     # Helper functions
