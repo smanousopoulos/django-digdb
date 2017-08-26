@@ -66,8 +66,8 @@ class Command(BaseCommand):
         # Create files
         self.render_template(urls_template, 'urls.py', output_dir)
         self.render_template(views_template, 'views.py', output_dir)
-        self.render_template(fieldlist_metatemplate, 'field_list.html', output_dir)
-        self.render_template(fielddetails_metatemplate, 'field_details.html', output_dir)
+        self.render_template(fieldlist_metatemplate, 'field_list.html', join(output_dir, 'jinja2'))
+        self.render_template(fielddetails_metatemplate, 'field_details.html', join(output_dir, 'jinja2'))
         self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'))
         
         self.render_template(models_template, 'models.py', output_dir, static=self.static)
