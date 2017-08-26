@@ -15,6 +15,7 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
 {% elif field.type == 'models.IntegerField' %}
     {{ name }} = {{ field.type }}({{ 'help_text=_("%s"), ' % field.help_text if field.help_text else '' }}
             {{- 'blank=False, ' if field.blank else 'blank=True, null=True, ' }}
+            {{- 'unique=True, ' if field.unique }}
             {{- 'verbose_name=_("%s"), ' % field.verbose_name if field.verbose_name else '' }}
             {{- 'default=%s, ' % field.default if field.default else '' }}
             {{- 'validators=%s, ' % field.validators if field.validators else '' }})
@@ -23,6 +24,7 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
             {{- 'decimal_places=%s, ' % field.decimal_places if field.decimal_places  else ''}}
             {{- 'help_text=_("%s"), ' % field.help_text if field.help_text else '' }}
             {{- 'blank=False, ' if field.blank else 'blank=True, null=True, ' }}
+            {{- 'unique=True, ' if field.unique }}
             {{- 'editable=False, ' if field.editable else '' }}
             {{- 'verbose_name=_("%s"), ' % field.verbose_name if field.verbose_name else '' }}
             {{- 'default=%s, ' % field.default if field.default else '' }}
@@ -38,6 +40,7 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
     {{ name }} = {{ field.type }}({{ 'max_length=%s, ' % field.max_length if field.max_length else '' }}
             {{- 'help_text=_("%s"), ' % field.help_text if field.help_text else '' }}
             {{- 'blank=False, ' if field.blank else 'blank=True, null=True, ' }}
+            {{- 'unique=True, ' if field.unique }}
             {{- 'editable=False, ' if field.editable else '' }}
             {{- 'verbose_name=_("%s"), ' % field.verbose_name if field.verbose_name else '' }}
             {{- 'choices=%s, ' % field.choices if field.choices else '' }}

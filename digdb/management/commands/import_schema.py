@@ -270,6 +270,9 @@ class Command(BaseCommand):
                 self.faceted[fld.get('name')] = fld.get('name')
                 var['faceted'] = True
 
+        if fld.get('unique'):
+            var['unique'] = True
+
         # Index all char fields and textfields for now
         if var['type']=='models.CharField' or var['type'] == 'models.TextField':
             #self.indexed[fld.get('name')] = fld.get('name')
