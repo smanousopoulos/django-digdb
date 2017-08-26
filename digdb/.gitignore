@@ -1,0 +1,8 @@
+migrations/
+jinja2/
+
+*.html
+*.py
+!__init__.py
+!apps.py
+!tests.py
