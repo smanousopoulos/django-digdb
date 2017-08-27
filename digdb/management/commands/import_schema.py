@@ -4,6 +4,7 @@ from distutils.sysconfig import get_python_lib
 import errno
 import re
 import json
+from collections import OrderedDict
 from pyxform import xls2json
 from jinja2 import Environment, PackageLoader
 
@@ -20,8 +21,8 @@ MINLENGTH_VALIDATOR = 'from django.core.validators import MinLengthValidator'
 class Command(BaseCommand):
     help = 'Auto-generates django admin & models & views from XFORM xls/xlsx'
 
-    models = {}
-    sec_models = {}
+    models = OrderedDict()
+    sec_models = OrderedDict()
     indexed = {}
     faceted = {}
     def add_arguments(self, parser):
@@ -112,7 +113,7 @@ class Command(BaseCommand):
                 'secondary': {},
                 'var': {},
                 'fn': {},
-                'fieldsets': {}
+                'fieldsets': OrderedDict()
                 }
         
         for field in form.get('children'):
