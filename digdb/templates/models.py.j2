@@ -65,7 +65,7 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
         return '{0}/id/{1}'.format(self.get_type(), self.pk)
     
     def get_edit_url(self):
-        return '/admin/xml2model/{0}/{1}'.format("".join(self.get_type().split("_")), self.pk)
+        return '/admin/{0}/{1}/{2}'.format(APP_NAME, "".join(self.get_type().split("_")), self.pk)
 
 {% if model.meta.default_field %}
     def __unicode__(self):
@@ -79,6 +79,10 @@ from datetime import datetime
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
+
+from .apps import DigDBConfig 
+
+APP_NAME = DigDBConfig.name
 
 class FieldHelperMixin(object):
 
