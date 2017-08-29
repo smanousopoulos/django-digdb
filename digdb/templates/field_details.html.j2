@@ -11,7 +11,7 @@
     </li>
     {{ "{%" }} elif field.type == 'unicode' or field.type == 'date' {{ "%}" }}
     <li><b>{{ "{{" }} field.label {{" }}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
-    {{ "{%" }} elif field.type == 'ImageFieldFile' {{ "%}" }}
+    {{ "{%" }} elif field.type == 'ImageWithThumbsFieldFile' {{ "%}" }}
     <li><img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="width:40%" /></li>
    {{ "{%" }} else {{ "%}" }}
    <li><b>{{ "{{" }} field.label {{ "}}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>

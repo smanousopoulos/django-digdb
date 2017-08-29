@@ -36,6 +36,14 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
             {{- 'default=%s, ' % field.default if field.default else '' }}
             {{- 'editable=False, ' if field.editable else '' }}
             {{- 'validators=%s, ' % field.validators if field.validators else '' }})
+{% elif field.type == 'ImageWithThumbsField' %}
+    {{ name }} = {{ field.type }}({{- 'help_text=_("%s"), ' % field.help_text if field.help_text else '' }}
+            {{- 'blank=False, ' if field.blank else 'blank=True, null=True, ' }}
+            {{- 'unique=True, ' if field.unique }}
+            {{- 'editable=False, ' if field.editable else '' }}
+            {{- 'verbose_name=_("%s"), ' % field.verbose_name if field.verbose_name else '' }}
+            {{- 'upload_to="photos",' }}
+            {{- 'sizes=((200,200),),' }})
 {% else %}
     {{ name }} = {{ field.type }}({{ 'max_length=%s, ' % field.max_length if field.max_length else '' }}
             {{- 'help_text=_("%s"), ' % field.help_text if field.help_text else '' }}
@@ -79,6 +87,7 @@ from datetime import datetime
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
+from django_thumbs.db.models import ImageWithThumbsField
 
 from .apps import DigDBConfig 
 

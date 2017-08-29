@@ -342,7 +342,7 @@ class Command(BaseCommand):
                 'decimal': 'models.DecimalField',
                 'integer': 'models.IntegerField',
                 'date': 'models.DateField',
-                'photo': 'models.ImageField',
+                'photo': 'ImageWithThumbsField',
                 'select one': 'models.CharField',
                 'select all that apply': 'MultiSelectField',
                 }.get(ftype, None)
