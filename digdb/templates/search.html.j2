@@ -4,15 +4,15 @@
     </div>
 </form>
 
-<!-- Begin faceting. -->
+<div style="float:right; margin-right: 20px;">
+{{ "{%" }} if request.user.is_authenticated() {{ "%}" }}
+<a href='/admin'>Admin</a>
+{{ "{%" }} endif {{ "%}" }}
+</div>
 
+<!-- Begin faceting. -->
 <!-- class model facet -->
 <div style="float:left; width:20%; padding-right:20px; border-right: 1px #666 solid">
-<h1>Filter</h1>
-{{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
-  <a style="float:right;" href='?'>Clear</a>
-{{ "{%" }} endif {{ "%}" }}
-<hr/>
 <div>
 		<dl>
       {{ "{%" }} if facets.fields {{ "%}" }}
@@ -23,6 +23,11 @@
       {{ "{%" }} endfor {{ "%}" }}
       {{ "{%" }} endfor {{ "%}" }}
       {{ "{%" }} endif {{ "%}" }}
+      <br />
+{{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
+  <a href='?'>Clear</a>
+{{ "{%" }} endif {{ "%}" }}
+
 		</dl>
 </div>
 {#
@@ -49,19 +54,16 @@
 <!-- End faceting -->
 </div>
 <div style="float:right; width:70%">
-<h1>Search results</h1>
-<hr/>
 <!-- Display results... -->
 {{"{%"}} for result in search {{"%}"}}
 		<div class="search_result">
-			<h3><a href='/{{"{{"}} result.object.get_url() {{"}}"}}'>{{"{{"}} result.object.get_url() {{"}}"}}</a></h3>
+      <h3><a href="{{ '{{' }} result.url {{ '}}' }}" style="margin-right:10px"><img src="{{ '{{' }} result.photo_url or '' {{ '}}' }}" style="max-height: 80px; margin-right:10px" />{{ '{{' }} result.id or '' {{ '}}' }}</a> {{ '{{' }} result.description or '' {{ '}}' }}</h3>
 		</div>
 {{" {% else %} "}}
 		<p>Sorry, no results found.</p>
 {{"{% endfor %}"}}
 
 <div class='paginator'>
-
   {{ "{%" }} set query = request.GET.copy() {{ "%}" }}
   {{ "{%" }} set page_no = request.GET.get('page') or 1 {{ "%}" }}
   {{ "{%" }} if paginator.page(page_no).has_previous() {{ "%}" }}
