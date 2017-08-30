@@ -17,7 +17,7 @@
 		<dl>
       {{ "{%" }} if facets.fields {{ "%}" }}
       {{ "{%" }} for facet, facet_items in facets.fields.iteritems() {{ "%}" }}
-      <dt>{{ "{{" }} facet {{ "}}" }}</dt>
+      <dt>{{ "{{" }} facet|capitalize {{ "}}" }}</dt>
       {{ "{%" }} for item in facet_items {{ "%}" }}
       <dd><a href='?selected_facets={{ "{{" }} facet {{ "}}" }}_exact:{{ "{{" }} item.0 {{ "}}" }}'>{{ "{{" }} item.0 {{ "}}" }}</a> ({{ "{{" }} item.1 {{ "}}" }})</dd>
       {{ "{%" }} endfor {{ "%}" }}

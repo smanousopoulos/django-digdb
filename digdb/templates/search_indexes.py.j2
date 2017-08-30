@@ -7,7 +7,7 @@ from .models import *
 {% macro create_indexes_class(model_name, model) %}
 class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
         text = indexes.CharField(document=True, use_template=True)  
-        facet_model_name = indexes.CharField(faceted=True)
+        category = indexes.CharField(faceted=True)
 
 {% for name, field in model.var.iteritems() %}
 {% if field.faceted %}
@@ -16,11 +16,10 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
         {{ name }} = indexes.CharField(model_attr='{{name}}', null=True)
 {% endif %}
 {% endfor %}
-        
         def get_model(self):
             return {{ model.meta.class }}
 
-        def prepare_facet_model_name(self, obj):
+        def prepare_category(self, obj):
             return "{{ model.meta.label }}"
       
 {% for name, field in model.var.iteritems() %}

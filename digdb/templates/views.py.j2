@@ -16,7 +16,7 @@ class FacetedSearchForm(BaseFacetedSearchForm):
 
 class FacetedSearchView(BaseFacetedSearchView):
     form_class = FacetedSearchForm
-    facet_fields = ['facet_model_name',
+    facet_fields = ['category',
             {%- for class_name, model in class_models.iteritems() -%}
             {%- for name, field in model.var.iteritems() -%}
             {%- if field.faceted -%}
