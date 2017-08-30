@@ -22,7 +22,7 @@
 <h1>{{ "{{" }} object._meta.verbose_name {{ "}}" }}</h1>
 
 {{ "{%" }} if request.user.is_authenticated() {{ "%}" }}
-<a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}'>Edit</a>
+<a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}' style="position: absolute; right: 20px; top: 20px">Edit</a>
 {{ "{%" }} endif {{ "%}" }}
 
 
