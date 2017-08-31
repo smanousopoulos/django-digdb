@@ -13,6 +13,8 @@
     <li><b>{{ "{{" }} field.label {{" }}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
     {{ "{%" }} elif field.type == 'ImageWithThumbsFieldFile' {{ "%}" }}
     <li><img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="max-width:980px" /></li>
+    {{ "{%" }} elif field == None {{ "%}" }}
+    {{ "{{" }} '' {{ "}}" }}
    {{ "{%" }} else {{ "%}" }}
    <li><b>{{ "{{" }} field.label {{ "}}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
    {{ "{%" }} endif {{ "%}" }}
@@ -28,8 +30,11 @@
 
 <hr/>
 <ul>
-  {{ "{%" }} for f in object.get_all_fields() {{ "%}" }}
+  {{ "{%" }} for g, flds in object.get_all_fields_by_fieldsets().iteritems() {{ "%}" }}
+    <h2>{{ "{{" }} g {{ "}}" }}</h2>
+    {{ "{%" }} for f in flds {{ "%}" }}
     {{ "{{" }} decide_field_representation(f) {{ "}}" }} 
+    {{ "{%" }} endfor {{ "%}" }}
   {{ "{%" }} endfor {{ "%}" }}
 </ul>
 

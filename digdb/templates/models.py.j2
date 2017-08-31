@@ -86,14 +86,15 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
 {% else %}
         return None
 {% endif %}
-
-{% if model.meta.default_field %}
-    def __unicode__(self):
-        return self.{{ model.meta.default_field }}
-{% endif %}
+{% if model.fieldsets %}
+    @staticmethod
+    def get_fieldsets():
+      return {{ model.fieldsets }}
+{% endif %} 
 {% endmacro %}
 
 from __future__ import unicode_literals
+from collections import OrderedDict
 from django.db import models
 from datetime import datetime
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
@@ -136,10 +137,13 @@ class FieldHelperMixin(object):
           return {
              'label': label, 
              'name': field.name,
-             'value':value,
+             'value': value,
              'type': type(value).__name__
           }
 
+    def get_foreign_fields(self):
+      return [self.get_field_display(f.name) for f in self._meta.get_fields() if self._meta.get_field(f.name).is_relation]
+  
     def get_all_fields(self):
       """Returns a list of all field names on the instance."""
       fields = []
@@ -148,7 +152,20 @@ class FieldHelperMixin(object):
           if field_display:
             fields.append(field_display)
       return fields
-    
+   
+    def get_all_fields_by_fieldsets(self):
+      """Returns an ordered dict of fields on the instance."""
+      all_fields = OrderedDict() 
+      for g, flds in self.get_fieldsets().iteritems():
+          fields = []
+          for f in flds:
+              field_display = self.get_field_display(f)  
+              if field_display:
+                fields.append(field_display)
+          all_fields[g] = fields
+      all_fields['Related fields'] = self.get_foreign_fields()
+      return all_fields
+
 # Static choices
 {% for choice, vals in static.choices.iteritems() %}
 {{ choice }} = {{ vals }} 
