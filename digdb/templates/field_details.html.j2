@@ -12,7 +12,7 @@
     {{ "{%" }} elif field.type == 'unicode' or field.type == 'date' {{ "%}" }}
     <li><b>{{ "{{" }} field.label {{" }}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
     {{ "{%" }} elif field.type == 'ImageWithThumbsFieldFile' {{ "%}" }}
-    <li><img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="width:40%" /></li>
+    <li><img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="max-width:980px" /></li>
    {{ "{%" }} else {{ "%}" }}
    <li><b>{{ "{{" }} field.label {{ "}}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
    {{ "{%" }} endif {{ "%}" }}
