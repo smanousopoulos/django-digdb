@@ -1,0 +1,9 @@
+<h3>
+  <a href=" {{ '{{' }} object.get_url() {{ '}}' }}" style="margin-right:10px">
+    <img src="{{ '{{' }} object.get_thumbnail() {{ '}}' }}" style="max-height: 80px;" />
+      {{ '{{' }} object.{{ model.meta.id }} or '' {{ '}}' }}
+  </a>
+  <span>
+    {{ '{{' }} object.{{ model.meta.description }} or '' {{ '}}' }}
+  </span>
+</h3>

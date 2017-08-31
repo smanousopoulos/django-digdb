@@ -55,13 +55,13 @@
 </div>
 <div style="float:right; width:70%">
 <!-- Display results... -->
+<div class="search_result">
 {{"{%"}} for result in search {{"%}"}}
-		<div class="search_result">
-      <h3><a href="{{ '{{' }} result.url {{ '}}' }}" style="margin-right:10px"><img src="{{ '{{' }} result.photo_url or '' {{ '}}' }}" style="max-height: 80px; margin-right:10px" />{{ '{{' }} result.id or '' {{ '}}' }}</a> {{ '{{' }} result.description or '' {{ '}}' }}</h3>
-		</div>
+  {{ "{{" }} result.rendered|safe {{ "}}" }}
 {{" {% else %} "}}
 		<p>Sorry, no results found.</p>
 {{"{% endfor %}"}}
+</div>
 
 <div class='paginator'>
   {{ "{%" }} set query = request.GET.copy() {{ "%}" }}

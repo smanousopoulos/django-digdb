@@ -64,6 +64,7 @@ class Command(BaseCommand):
         views_template = env.get_template('views.py.j2')
         search_metatemplate = env.get_template('search.html.j2')
         index_text_template = env.get_template('index_text.txt.j2')
+        index_rendered_template = env.get_template('index_rendered.txt.j2')
         fieldlist_metatemplate = env.get_template('field_list.html.j2')
         fielddetails_metatemplate = env.get_template('field_details.html.j2')
 
@@ -85,6 +86,7 @@ class Command(BaseCommand):
         all_models.update(self.sec_models)
         for name, model in all_models.iteritems():
             self.render_template(index_text_template, '{0}_text.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
+            self.render_template(index_rendered_template, '{0}_rendered.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
  
         if options['debug']:
             with open(join(output_dir, 'out.json'), 'w') as json_out:
@@ -97,13 +99,11 @@ class Command(BaseCommand):
     def _parse_entrypoint (self, form):
         name, class_name, label = self._get_form_name_class_label(form)
         
-        default_field = None
         # heuristics to set default field for class representation
         #TODO: should be set explicitly
         for f in form.get('children'):
             if type(f.get('bind')) is dict:
                 if (f.get('bind').get('required') and (f.get('type') == 'string' or f.get('type') == 'text' or f.get('type') == 'select one')):
-                    default_field = f.get('name')
                     break
         parent_class = ''
         parent_label = ''
@@ -113,7 +113,6 @@ class Command(BaseCommand):
                     'name': name,
                     'label': u'{0}'.format(label),
                     'class': '{0}'.format(class_name),
-                    'default_field': default_field,
                     },
                 'secondary': {},
                 'var': {},
@@ -124,6 +123,30 @@ class Command(BaseCommand):
         for field in form.get('children'):
             self._parse_generic(model, field) 
     
+        # Find thumbnail
+        model['meta']['thumb'] = {
+                'found': False,
+        }
+        for n, f in model['var'].iteritems():
+            if f.get('type') == 'ImageWithThumbsField':
+                model['meta']['thumb'] = {
+                        'type': 'self',
+                        'found': True,
+                        'field': n,
+                }
+                break
+
+        if not model['meta']['thumb']['found']:
+            for sec_name, sec_val in model['secondary'].iteritems():
+                for n, f in self.sec_models[sec_name]['var'].iteritems():
+                    if f.get('type') == 'ImageWithThumbsField':
+                        model['meta']['thumb'] = {
+                                'type': 'rel',
+                                'found': True,
+                                'sec_model': sec_name,
+                                'field': n,
+                        }
+                        break
         return name, model
 
     def _parse_generic(self, model, field):
@@ -140,6 +163,12 @@ class Command(BaseCommand):
     def _parse_field(self, model, field):
         name, parsed = self._get_field(field)
         if parsed:
+            if parsed.get('id_field'):
+                model['meta']['id'] = name
+                del parsed['id_field']
+            if parsed.get('description_field'):
+                model['meta']['description'] = name
+                del parsed['description_field']
             model['var'][name] = parsed
    
     def _parse_group(self, model, group):
@@ -177,8 +206,7 @@ class Command(BaseCommand):
         #            }
 
         sec_name, sec_model = self._parse_entrypoint(group)
-        
-
+         
         if sec_name in self.sec_models:
             self.sec_models[sec_name]['var'][model['meta']['name']] = {
                     'type': 'ForeignKey',
@@ -278,6 +306,12 @@ class Command(BaseCommand):
 
         if fld.get('unique'):
             var['unique'] = True
+
+        if fld.get('id'):
+            var['id_field'] = True
+
+        if fld.get('description'):
+            var['description_field'] = True
 
         # Index all char fields and textfields for now
         if var['type']=='models.CharField' or var['type'] == 'models.TextField':

@@ -16,12 +16,14 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
         {{ name }} = indexes.CharField(model_attr='{{name}}', null=True)
 {% endif %}
 {% endfor %}
+        rendered = indexes.CharField(use_template=True, indexed=False)
+
         def get_model(self):
             return {{ model.meta.class }}
 
         def prepare_category(self, obj):
             return "{{ model.meta.label }}"
-      
+
 {% for name, field in model.var.iteritems() %}
 {% if field.faceted %}
         def prepare_{{ field.name }}(self, obj):
@@ -37,6 +39,6 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
 {% endfor %}
 
 # Sec Models index classes
-{% for class_name, model in sec_models.iteritems() %}
-{{ create_indexes_class(class_name, model) }}
-{% endfor %}
+#{% for class_name, model in sec_models.iteritems() %}
+#{{ "{{" }} create_indexes_class(class_name, model) {{ "}}" }}
+##{% endfor %}

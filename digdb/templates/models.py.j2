@@ -75,6 +75,18 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
     def get_edit_url(self):
         return '/admin/{0}/{1}/{2}'.format(APP_NAME, "".join(self.get_type().split("_")), self.pk)
 
+    def get_thumbnail(self):
+{% if model.meta.thumb and model.meta.thumb.found %}
+{% if model.meta.thumb.type == 'self' %}
+        return self.{{ model.meta.thumb.field }}.url_200x200
+{% elif model.meta.thumb.type == 'rel' %}
+        items = self.{{ model.meta.thumb.sec_model }}.all()
+        return items[0].{{ model.meta.thumb.field }}.url_200x200 if items and len(items) > 0 else None
+{% endif %}
+{% else %}
+        return None
+{% endif %}
+
 {% if model.meta.default_field %}
     def __unicode__(self):
         return self.{{ model.meta.default_field }}
