@@ -12,8 +12,9 @@ from django.core.management.base import BaseCommand, CommandError
 
 from ...apps import DigDBConfig
         
-
+PREFERED_LANG_DEFAULT = 'english'
 APP_NAME = DigDBConfig.name
+
 
 REGEX_VALIDATOR = 'from django.core.validators import RegexValidator'
 MINLENGTH_VALIDATOR = 'from django.core.validators import MinLengthValidator'
@@ -21,6 +22,7 @@ MINLENGTH_VALIDATOR = 'from django.core.validators import MinLengthValidator'
 class Command(BaseCommand):
     help = 'Auto-generates django admin & models & views from XFORM xls/xlsx'
 
+    lang = PREFERED_LANG_DEFAULT
     models = OrderedDict()
     sec_models = OrderedDict()
     indexed = {}
@@ -29,16 +31,17 @@ class Command(BaseCommand):
         parser.add_argument('input', type=str)
         parser.add_argument('--output', type=str)
         parser.add_argument('--debug', action='store_true')
+        parser.add_argument('--lang', type=str)
         #parser.add_argument('--viewonly', action='store_true')
     
     def handle(self, *args, **options): 
-        env = Environment(loader=PackageLoader(APP_NAME, 'templates'), trim_blocks=True)
-        
         self.static = {
             'choices': {}
         }
 
         output_dir = options['output'] if options['output'] else join(get_python_lib(), APP_NAME)
+        if options['lang']:
+            self.lang = options['lang']
 
         # Parse files
         files = [join(options['input'], f) for f in listdir(options['input']) if isfile(join(options['input'], f)) and (splitext(f)[1] == '.xls' or splitext(f)[1] == '.xlsx')]
@@ -50,6 +53,8 @@ class Command(BaseCommand):
             name, model = self._parse_entrypoint(json_data)
             self.models[name] = model
          
+        env = Environment(loader=PackageLoader(APP_NAME, 'templates'), trim_blocks=True)
+
         # Load templates
         models_template = env.get_template('models.py.j2')
         indexes_template = env.get_template('search_indexes.py.j2')
@@ -205,7 +210,7 @@ class Command(BaseCommand):
         choices = []
         for choice in field.get('choices'):
             name = choice.get('name')
-            label = choice.get('label').get('greek') or choice.get('label')
+            label = choice.get('label').get(self.lang) or choice.get('label')
             if not model.get('var').get(field.get('name')):
                 raise Exception ('field %s not parsed' % field.get('name'))
             model.get('var').get(field.get('name'))['choices'] = choice_name 
@@ -220,7 +225,7 @@ class Command(BaseCommand):
 
         if fld.get('label'):
             if type(fld.get('label')) is dict:
-                var['verbose_name'] = fld.get('label').get('greek')
+                var['verbose_name'] = fld.get('label').get(self.lang)
             else:
                 var['verbose_name'] = fld.get('label')
         if fld.get('type') == 'string' or fld.get('type') == 'select one':
@@ -238,7 +243,7 @@ class Command(BaseCommand):
 
         if fld.get('hint'):
             if type(fld.get('hint')) is dict:
-                var['help_text'] = fld.get('hint').get('greek')
+                var['help_text'] = fld.get('hint').get(self.lang)
             else:
                 var['help_text'] = fld.get('hint')
 
@@ -259,7 +264,7 @@ class Command(BaseCommand):
                 var['editable'] = 'false'
                 
             if fld.get('bind').get('constraint'):
-                var['validators'] = self._get_constraint(fld.get('bind').get('constraint'), fld.get('bind').get('jr:constraintMsg').get('greek'))
+                var['validators'] = self._get_constraint(fld.get('bind').get('constraint'), fld.get('bind').get('jr:constraintMsg').get(self.lang))
         
         var['type'] = self._get_type(fld.get('type'))
         if not var['type']:
@@ -322,7 +327,7 @@ class Command(BaseCommand):
         if form.get('label'):
 
             if type(form.get('label')) is dict:
-                label = ''.join(form.get('label').get('greek').split('-'))
+                label = ''.join(form.get('label').get(self.lang).split('-'))
             else:
                 label = form.get('label')
         elif form.get('title'):
