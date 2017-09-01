@@ -28,6 +28,12 @@ class {{ model.meta.class }}Resource (resources.ModelResource):
 @admin.register({{ model.meta.class }})
 class {{ model.meta.class }}Admin (ImportExportModelAdmin):
     resource_class = {{ model.meta.class }}Resource
+{% if model.meta.id %}
+    list_display = ('id', '{{ model.meta.id }}',)
+    ordering = ('id',)
+    search_fields = ('{{ model.meta.id }}', '{{ model.meta.description }}',)
+{% endif %}
+
 {% if model.secondary %}
     inlines = [
     {% for sec_class_name, sec_model in model.secondary.iteritems() %}
@@ -58,6 +64,12 @@ class {{ model.meta.class }}Resource (resources.ModelResource):
 @admin.register({{ model.meta.class }})
 class {{ model.meta.class }}Admin (ImportExportModelAdmin):
     resource_class = {{ model.meta.class }}Resource
+{% if model.meta.id %}
+    list_display = ('id', '{{ model.meta.id }}',)
+    ordering = ('id',)
+    search_fields = ('{{ model.meta.id }}', '{{ model.meta.description }}',)
+{% endif %}
+
 {% if model.secondary %}
     inlines = [
     {% for sec_class_name, sec_model in model.secondary.iteritems() %}
