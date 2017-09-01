@@ -16,6 +16,7 @@ Quick start
         'multiselectfield',
         'haystack',
         'rest_framework',
+        'import_export',
         'digdb',
     ]
 

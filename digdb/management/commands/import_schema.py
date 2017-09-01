@@ -115,7 +115,7 @@ class Command(BaseCommand):
                     'class': '{0}'.format(class_name),
                     },
                 'secondary': {},
-                'var': {},
+                'var': OrderedDict(),
                 'fn': {},
                 'fieldsets': OrderedDict()
                 }

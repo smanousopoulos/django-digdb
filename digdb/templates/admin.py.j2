@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
 from .models import *
 
 {% for sec_class_name, sec_model in sec_models.iteritems() %}
@@ -15,10 +18,16 @@ class {{sec_model.meta.class}}Inline(admin.StackedInline):
     )
 {% endfor %}
 
+
+
 {% for class_name, model in class_models.iteritems() %}
+class {{ model.meta.class }}Resource (resources.ModelResource):
+  class Meta:
+    model = {{ model.meta.class }}
 
 @admin.register({{ model.meta.class }})
-class {{ model.meta.class }}Admin (admin.ModelAdmin):
+class {{ model.meta.class }}Admin (ImportExportModelAdmin):
+    resource_class = {{ model.meta.class }}Resource
 {% if model.secondary %}
     inlines = [
     {% for sec_class_name, sec_model in model.secondary.iteritems() %}
@@ -42,9 +51,13 @@ class {{ model.meta.class }}Admin (admin.ModelAdmin):
 {% endfor %}
 
 {% for class_name, model in sec_models.iteritems() %}
+class {{ model.meta.class }}Resource (resources.ModelResource):
+  class Meta:
+    model = {{ model.meta.class }}
 
 @admin.register({{ model.meta.class }})
-class {{ model.meta.class }}Admin (admin.ModelAdmin):
+class {{ model.meta.class }}Admin (ImportExportModelAdmin):
+    resource_class = {{ model.meta.class }}Resource
 {% if model.secondary %}
     inlines = [
     {% for sec_class_name, sec_model in model.secondary.iteritems() %}
