@@ -8,6 +8,8 @@ from .models import *
 class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
         text = indexes.CharField(document=True, use_template=True)  
         category = indexes.CharField(faceted=True)
+        category_order = indexes.IntegerField()
+        id_order = indexes.IntegerField()
 
 {% for name, field in model.var.iteritems() %}
 {% if field.faceted %}
@@ -27,6 +29,12 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
 
         def prepare_category(self, obj):
             return "{{ model.meta.label }}"
+
+        def prepare_category_order(self, obj):
+          return {{ model.meta.order|int }}
+      
+        def prepare_id_order(self, obj):
+          return int(obj.id)
 
 {% for name, field in model.var.iteritems() %}
 {% if field.faceted %}

@@ -27,6 +27,7 @@ class Command(BaseCommand):
     sec_models = OrderedDict()
     indexed = {}
     faceted = {}
+    order = 0
     def add_arguments(self, parser):
         parser.add_argument('input', type=str)
         parser.add_argument('--output', type=str)
@@ -49,6 +50,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Found %d files\n' % len(files)))
 
         for fin in files:
+            self.order += 1
             json_data = self.read_json_from_file(fin)
             name, model = self._parse_entrypoint(json_data)
             self.models[name] = model
@@ -107,12 +109,13 @@ class Command(BaseCommand):
                     break
         parent_class = ''
         parent_label = ''
-        
+
         model = {
                 'meta': {
                     'name': name,
                     'label': u'{0}'.format(label),
                     'class': '{0}'.format(class_name),
+                    'order': self.order
                     },
                 'secondary': {},
                 'var': OrderedDict(),

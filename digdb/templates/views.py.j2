@@ -27,12 +27,13 @@ class FacetedSearchView(BaseFacetedSearchView):
             ]
     template_name = 'search/search.html'
     context_object_name = 'search'
+    order_by = 'id_order'
 
     def get_queryset(self):
         qs = super(BaseFacetedSearchView, self).get_queryset()
         for field in self.facet_fields:
             qs = qs.facet(field, sort='index')
-        return qs
+        return qs.order_by('category_order', self.order_by)
 
     def get_form_kwargs(self):
         """
