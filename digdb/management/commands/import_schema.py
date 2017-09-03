@@ -314,10 +314,9 @@ class Command(BaseCommand):
             var['description_field'] = True
 
         # Index all char fields and textfields for now
-        if var['type']=='models.CharField' or var['type'] == 'models.TextField':
+        if var['type']=='models.CharField' or var['type'] == 'models.TextField' or var['type'] == 'models.DateField':
             #self.indexed[fld.get('name')] = fld.get('name')
             var['indexed'] = True
-
         return (var['name'], var)
      
     def _get_constraint (self, constraint, message):

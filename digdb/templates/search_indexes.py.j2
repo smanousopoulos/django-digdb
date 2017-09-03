@@ -13,7 +13,11 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
 {% if field.faceted %}
         {{ name }} = indexes.CharField(model_attr='{{name}}', faceted=True, null=True)
 {% elif field.indexed %}
+{% if field.type == 'models.DateField' %}
+        {{ name }} = indexes.DateField(model_attr='{{name}}', null=True)
+{% else %}
         {{ name }} = indexes.CharField(model_attr='{{name}}', null=True)
+{% endif %}
 {% endif %}
 {% endfor %}
         rendered = indexes.CharField(use_template=True, indexed=False)
