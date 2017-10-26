@@ -64,14 +64,36 @@
 <div class='paginator'>
   {{ "{%" }} set query = request.GET.copy() {{ "%}" }}
   {{ "{%" }} set page_no = request.GET.get('page') or 1 {{ "%}" }}
+  {{ "{%" }} set PAGES = 10 {{ "%}" }}
   {{ "{%" }} if paginator.page(page_no).has_previous() {{ "%}" }}
 
   {{ "{%" }} do query.setlist('page', [paginator.page(page_no).previous_page_number()]) {{ "%}" }}
-  <a style='float:left' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Previous</a>
+  <a class='previous' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Previous</a>
   {{ "{%" }} endif {{ "%}" }}
+
+  <div class='pages'>
+    {{ "{%" }} if page_no|int > 1 {{ "%}" }}
+    {{ "{%" }} do query.setlist('page', [1]) {{ "%}" }}
+      <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>First</a>
+    {{ "{%" }} endif {{ "%}" }}
+  
+    {{ "{%" }} for page in paginator.page_range {{ "%}" }}
+      {{ "{%" }} if page > page_no|int - PAGES and page < page_no|int + PAGES {{ "%}" }} 
+        {{ "{%" }} do query.setlist('page', [page]) {{ "%}" }}
+        {{ "{%" }} set active = page_no|int == page {{ "%}" }}
+        <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}' class='page{{ "{{" }} ' active' if active else '' {{ "}}" }}'>{{ "{{" }} page {{ "}}" }}</a>
+      {{ "{%" }} endif {{ "%}" }}
+    {{ "{%" }} endfor {{ "%}" }}
+
+    {{ "{%" }} if page_no|int < paginator.page_range|length - 1 {{ "%}" }}
+      {{ "{%" }} do query.setlist('page', [paginator.page_range|length - 1]) {{ "%}" }}
+       <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Last</a>
+    {{ "{%" }} endif {{ "%}" }}
+  </div>
+
   {{ "{%" }} if paginator.page(page_no).has_next() {{ "%}" }}
   {{ "{%" }} do query.setlist('page', [paginator.page(page_no).next_page_number()]) {{ "%}" }}
-  <a style='float:right' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Next</a>
+  <a class='next' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Next</a>
   {{ "{%" }} endif {{ "%}" }}
 </div>
 
