@@ -1,100 +1,92 @@
-<form method="get" action=".">
-  <div>
-    <input id="id_q" type="text" name="q" placeholder="Search" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> <input type="submit" value="Search">
-    </div>
-</form>
+{{ "{%" }} extends "base.html" {{ "%}" }}
 
-<div style="float:right; margin-right: 20px;">
-<a href='/admin'>Admin</a>
-</div>
+{{ "{%" }} block sidebar {{ "%}" }}
+<div class='sidebar'>
+  <dl>
+    {{ "{%" }} if facets.fields {{ "%}" }}
+    {{ "{%" }} for facet, facet_items in facets.fields.iteritems() {{ "%}" }}
+    <dt class='facet-category'>
+      <h3>{{ "{{" }} facet|capitalize {{ "}}" }}</h3>
+    </dt>
 
-<!-- Begin faceting. -->
-<!-- class model facet -->
-<div style="float:left; width:20%; padding-right:20px; border-right: 1px #666 solid">
-<div>
-		<dl>
-      {{ "{%" }} if facets.fields {{ "%}" }}
-      {{ "{%" }} for facet, facet_items in facets.fields.iteritems() {{ "%}" }}
-      <dt>{{ "{{" }} facet|capitalize {{ "}}" }}</dt>
-      {{ "{%" }} for item in facet_items {{ "%}" }}
-      <dd><a href='?selected_facets={{ "{{" }} facet {{ "}}" }}_exact:{{ "{{" }} item.0 {{ "}}" }}'>{{ "{{" }} item.0 {{ "}}" }}</a> ({{ "{{" }} item.1 {{ "}}" }})</dd>
-      {{ "{%" }} endfor {{ "%}" }}
-      {{ "{%" }} endfor {{ "%}" }}
-      {{ "{%" }} endif {{ "%}" }}
-      <br />
-{{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
-  <a href='?'>Clear</a>
-{{ "{%" }} endif {{ "%}" }}
+    {{ "{%" }} set selected_facets = request.GET.getlist('selected_facets') {{ "%}" }}
+    {{ "{%" }} for item in facet_items {{ "%}" }}
 
-		</dl>
-</div>
-{#
-{% for model_name, model in class_models.iteritems() %}
-{% for name, field in model.var.iteritems() %}
-{% if field.faceted %}
-<h2>By {{field.verbose_name}}</h2>
-<div>
-		<dl>
-			{{"{%"}} if facets.fields.{{name}} {{"%}"}}
-			<dt>{{field.verbose_name}}</dt>
-			{{"{%"}} for item in facets.fields.{{name}} {{"%}"}}
-			<dd><a href='?selected_facets={{name}}_exact:{{"{{"}} item.0 {{"}}"}}'>{{"{{"}} item.0 {{"}}"}}</a> ({{"{{"}} item.1 {{"}}"}})</dd>
-			{{"{%"}} endfor {{"%}"}}
-			{{"{% else %}"}}
-			<p>No {{field.verbose_name}} facets.</p>
-			{{"{% endif %}"}}
-		</dl>
-</div>
-{% endif %}
-{% endfor %}
-{% endfor %}
-#}
-<!-- End faceting -->
-</div>
-<div style="float:right; width:70%">
-<!-- Display results... -->
-<div class="search_result">
-{{"{%"}} for result in search {{"%}"}}
-  {{ "{{" }} result.rendered|safe {{ "}}" }}
-{{" {% else %} "}}
-		<p>Sorry, no results found.</p>
-{{"{% endfor %}"}}
-</div>
-
-<div class='paginator'>
-  {{ "{%" }} set query = request.GET.copy() {{ "%}" }}
-  {{ "{%" }} set page_no = request.GET.get('page') or 1 {{ "%}" }}
-  {{ "{%" }} set PAGES = 10 {{ "%}" }}
-  {{ "{%" }} if paginator.page(page_no).has_previous() {{ "%}" }}
-
-  {{ "{%" }} do query.setlist('page', [paginator.page(page_no).previous_page_number()]) {{ "%}" }}
-  <a class='previous' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Previous</a>
-  {{ "{%" }} endif {{ "%}" }}
-
-  <div class='pages'>
-    {{ "{%" }} if page_no|int > 1 {{ "%}" }}
-    {{ "{%" }} do query.setlist('page', [1]) {{ "%}" }}
-      <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>First</a>
-    {{ "{%" }} endif {{ "%}" }}
-  
-    {{ "{%" }} for page in paginator.page_range {{ "%}" }}
-      {{ "{%" }} if page > page_no|int - PAGES and page < page_no|int + PAGES {{ "%}" }} 
-        {{ "{%" }} do query.setlist('page', [page]) {{ "%}" }}
-        {{ "{%" }} set active = page_no|int == page {{ "%}" }}
-        <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}' class='page{{ "{{" }} ' active' if active else '' {{ "}}" }}'>{{ "{{" }} page {{ "}}" }}</a>
-      {{ "{%" }} endif {{ "%}" }}
+    {{ "{%" }} set exact = facet + '_exact:' + item.0 {{ "%}" }}
+    <dd class='facet-item {{ "{{" }} "active" if exact in selected_facets else "" {{ "}}" }}'>
+    <a href='?selected_facets={{ "{{" }} exact {{ "}}" }}'>{{ "{{" }} item.0 {{ "}}" }} ({{ "{{" }} item.1 {{ "}}" }})</a>
+    </dd>
     {{ "{%" }} endfor {{ "%}" }}
-
-    {{ "{%" }} if page_no|int < paginator.page_range|length - 1 {{ "%}" }}
-      {{ "{%" }} do query.setlist('page', [paginator.page_range|length - 1]) {{ "%}" }}
-       <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Last</a>
+    {{ "{%" }} endfor {{ "%}" }}
     {{ "{%" }} endif {{ "%}" }}
+    <br />
+    {{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
+    <div class='clear-btn'>
+      <a href='?'>Clear</a>
+    </div>
+    {{ "{%" }} endif {{ "%}" }}
+  </dl>
+</div>
+{{ "{%" }} endblock {{ "%}" }}
+
+
+{{ "{%" }} block content {{ "%}" }}
+<div class='content'>
+  {{ "{%" }} block search {{ "%}" }}
+  <div class='search'>
+    <form method="get" action=".">
+      <input id="id_q" type="text" name="q" placeholder="Search" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> 
+      <button type="submit" class="search-btn fa fa-lg fa-search"/>
+    </form>
+  </div>
+  {{ "{%" }} endblock {{ "%}" }}
+
+  <div class='search-results'>
+  {{"{%"}} for result in search {{"%}"}}
+    {{ "{{" }} result.rendered|safe {{ "}}" }}
+  {{" {% else %} "}}
+      <span class='not-found'>Sorry, no results found.</span>
+  {{"{% endfor %}"}}
   </div>
 
-  {{ "{%" }} if paginator.page(page_no).has_next() {{ "%}" }}
-  {{ "{%" }} do query.setlist('page', [paginator.page(page_no).next_page_number()]) {{ "%}" }}
-  <a class='next' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>Next</a>
-  {{ "{%" }} endif {{ "%}" }}
-</div>
+  <div class='paginator'>
+    {{ "{%" }} set query = request.GET.copy() {{ "%}" }}
+    {{ "{%" }} set page_no = request.GET.get('page') or 1 {{ "%}" }}
+    {{ "{%" }} set PAGES = 5 {{ "%}" }}
 
+    <div class='paginator-left'>
+      {{ "{%" }} if page_no|int > 1 {{ "%}" }}
+      {{ "{%" }} do query.setlist('page', [1]) {{ "%}" }}
+        <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'><<</a>
+      {{ "{%" }} endif {{ "%}" }}
+
+      {{ "{%" }} if paginator.page(page_no).has_previous() {{ "%}" }}
+      {{ "{%" }} do query.setlist('page', [paginator.page(page_no).previous_page_number()]) {{ "%}" }}
+      <a class='previous' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'><</a>
+      {{ "{%" }} endif {{ "%}" }}
+    </div>
+
+    <div class='pages'>          
+      {{ "{%" }} for page in paginator.page_range {{ "%}" }}
+        {{ "{%" }} if page > page_no|int - PAGES and page < page_no|int + PAGES {{ "%}" }} 
+          {{ "{%" }} do query.setlist('page', [page]) {{ "%}" }}
+          {{ "{%" }} set active = page_no|int == page {{ "%}" }}
+          <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}' class='page{{ "{{" }} ' active' if active else '' {{ "}}" }}'>{{ "{{" }} page {{ "}}" }}</a>
+        {{ "{%" }} endif {{ "%}" }}
+      {{ "{%" }} endfor {{ "%}" }}      
+    </div>
+
+    <div class='paginator-right'>
+      {{ "{%" }} if paginator.page(page_no).has_next() {{ "%}" }}
+      {{ "{%" }} do query.setlist('page', [paginator.page(page_no).next_page_number()]) {{ "%}" }}
+        <a class='next' href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>></a>
+      {{ "{%" }} endif {{ "%}" }}
+
+      {{ "{%" }} if page_no|int < paginator.page_range|length{{ "%}" }}
+      {{ "{%" }} do query.setlist('page', [paginator.page_range|length]) {{ "%}" }}
+        <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>>></a>
+      {{ "{%" }} endif {{ "%}" }}
+    </div>
+  </div>
 </div>
+{{ "{%" }} endblock {{ "%}" }}

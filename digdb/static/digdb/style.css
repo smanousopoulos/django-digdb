@@ -1,0 +1,171 @@
+body {
+  background-color: #fff;
+}
+
+a, a:link, a:visited, a:link:visited {
+  color: #777;
+}
+
+a:active, a:hover, a:link:active, a:link:hover {
+  color: #131212!important;
+}
+/* Header */
+
+.header {
+  padding: 15px;
+  background-color: #1D1D1D;
+}
+
+.header a {
+  color: #9c9c9c;
+}
+
+.header a:hover {
+  color: #bdbbbb!important;
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.admin-btn {
+  float: right;
+  margin-top: -20px;
+}
+
+/* Content */
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  flex: 0 0 200px;
+  background-color: #fcfcfc;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+/* Facets */
+
+.facet-category {
+  margin: 10px;
+}
+
+.facet-item {
+}
+
+.facet-item:hover {
+  background: #ddd;
+}
+.facet-item > a {
+  display: block;
+  padding: 5px 10px;
+}
+
+.facet-item.active {
+  background: #ddd;;
+}
+
+.facet-item-count {
+  margin-left: 5px;
+}
+
+.clear-btn > a {
+  display: block;
+  padding: 5px 10px;
+}
+
+/* Search */
+
+.search > form {
+  margin-bottom: 0;
+  box-shadow: none;
+  margin-bottom: 20px;
+}
+
+.search .search-btn {
+  position: absolute;
+  right: 28px;
+  margin-top: -29px;
+  border: none!important;
+}
+.search .search-btn:hover {
+  background-color: #fff!important;
+}
+
+.search-results {
+  min-height: 600px;
+}
+
+.not-found {
+  margin-left: 20px;
+}
+.search-results > .item:first-child {
+  border-top: solid 1px #ddd;
+}
+
+.item {
+  border-bottom: solid 1px #ddd;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.item > a {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+.item img {
+  flex: 0 0 80px;
+  height: 80px;
+  margin-right: 20px;
+}
+
+.item:hover {
+  background-color: #fcfcfc;
+}
+
+/* Pagination */
+
+.paginator {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 10px;
+}
+
+.paginator-left {
+  margin-right: 10px;
+}
+
+.paginator-right {
+  margin-left: 10px;
+}
+
+.page {
+  margin-right: 5px;
+}
+
+.page.active {
+  font-weight: bold;
+}
+/* Field details */
+
+.details {
+  width: 100%;
+  padding: 10px;
+}
+
+.back-btn {
+}
+
+/* Footer */
+
+.footer {
+  height: 40px;
+  background-color: #1D1D1D;
+}

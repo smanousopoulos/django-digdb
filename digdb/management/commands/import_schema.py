@@ -64,6 +64,7 @@ class Command(BaseCommand):
         serializers_template = env.get_template('serializers.py.j2')
         urls_template = env.get_template('urls.py.j2')
         views_template = env.get_template('views.py.j2')
+        base_metatemplate = env.get_template('base.html.j2')
         search_metatemplate = env.get_template('search.html.j2')
         index_text_template = env.get_template('index_text.txt.j2')
         index_rendered_template = env.get_template('index_rendered.txt.j2')
@@ -77,6 +78,7 @@ class Command(BaseCommand):
         self.render_template(views_template, 'views.py', output_dir)
         self.render_template(fieldlist_metatemplate, 'field_list.html', join(output_dir, 'jinja2'))
         self.render_template(fielddetails_metatemplate, 'field_details.html', join(output_dir, 'jinja2'))
+        self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'))
         self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'))
         
         self.render_template(models_template, 'models.py', output_dir, static=self.static)

@@ -19,23 +19,34 @@
    <li><b>{{ "{{" }} field.label {{ "}}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
    {{ "{%" }} endif {{ "%}" }}
   </ul>
-  {{ "{%" }} endmacro {{ "%}" }}
+{{ "{%" }} endmacro {{ "%}" }}
 
-<h1>{{ "{{" }} object._meta.verbose_name {{ "}}" }}</h1>
+
+{{ "{%" }} extends "base.html" {{ "%}" }}
 
 {{ "{%" }} if request.user.is_authenticated() {{ "%}" }}
-<a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}' style="position: absolute; right: 20px; top: 20px">Edit</a>
+{{ "{%" }} block admin_btn {{ "%}" }}
+  <div class='edit-btn'>
+    <a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}'>Edit</a>
+  </div>
 {{ "{%" }} endif {{ "%}" }}
+{{ "{%" }} endblock {{ "%}" }}
 
-
-<hr/>
-<ul>
-  {{ "{%" }} for g, flds in object.get_all_fields_by_fieldsets().iteritems() {{ "%}" }}
-    <h2>{{ "{{" }} g {{ "}}" }}</h2>
-    {{ "{%" }} for f in flds {{ "%}" }}
-    {{ "{{" }} decide_field_representation(f) {{ "}}" }} 
-    {{ "{%" }} endfor {{ "%}" }}
+{{ "{%" }} block content {{ "%}" }}
+<div class='details'>
+  <h1>{{ "{{" }} object._meta.verbose_name {{ "}}" }}</h1> 
+  <hr/>
+    {{ "{%" }} for g, flds in object.get_all_fields_by_fieldsets().iteritems() {{ "%}" }}
+    <div class='category'>
+      <h2>{{ "{{" }} g {{ "}}" }}</h2>
+      {{ "{%" }} for f in flds {{ "%}" }}
+      {{ "{{" }} decide_field_representation(f) {{ "}}" }} 
+      {{ "{%" }} endfor {{ "%}" }}
+    </div>
   {{ "{%" }} endfor {{ "%}" }}
-</ul>
 
-<a href="/">Back</a>
+  <div class='back-btn'>
+    <a href="/">Back</a>
+  </div>
+</div>
+{{ "{%" }} endblock {{ "%}" }}

@@ -1,9 +1,9 @@
-<h3>
-  <a href="{{'{{'}} object.get_url() {{'}}'}}" style="margin-right:10px">
-    <img src="{{'{{'}}object.get_thumbnail(){{'}}'}}" style="max-height: 80px;" />
-    <span>{{'{{'}}object.{{ model.meta.id or 'id' }} or ''{{'}}'}}</span>
+<div class='item'>
+  <a href="{{'{{'}} object.get_url() {{'}}'}}">
+    <img class='display' src="{{'{{'}}object.get_thumbnail(){{'}}'}}" />
+    <span class='id'>{{'{{'}}object.{{ model.meta.id or 'id' }} or ''{{'}}'}}</span>
+    <span class='description'>
+      {{'{{'}} object.{{ model.meta.description or 'description' }} or ''{{'}}'}}
+    </span>
   </a>
-  <span>
-    {{'{{'}} object.{{ model.meta.description or 'description' }} or ''{{'}}'}}
-  </span>
-</h3>
+</div>

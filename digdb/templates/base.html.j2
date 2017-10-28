@@ -1,0 +1,41 @@
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" type="text/css" href='{{ "{{" }} static("djangocms_admin_style/css/djangocms-admin.css") {{ "}}" }}' />
+  <script src=' {{ "{{" }} static("djangocms_admin_style/js/dist/bundle.adminstyle.min.js") {{ "}}" }}'></script>
+  <script src="https://use.fontawesome.com/81384027ca.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href=' {{ "{{" }} static("digdb/style.css") {{ "}}" }}' />
+</head>
+<body>
+  <div class='header'>
+  {{ "{%" }} block header {{ "%}" }}
+
+    {{ "{%" }} block logo {{ "%}" }}
+        <div class='logo'>
+          <a href='/'>DigDB</a>
+        </div>
+    {{ "{%" }} endblock {{ "%}" }}
+
+    <div class='admin-btn'>
+      {{ "{%" }} block admin_btn {{ "%}" }} 
+        <a href='/admin'>Admin</a>
+      {{ "{%" }} endblock {{ "%}" }}
+    </div>
+  {{ "{%" }} endblock {{ "%}" }}
+  </div>
+
+  <div class='main'>
+  {{ "{%" }} block sidebar {{ "%}" }}
+  {{ "{%" }} endblock {{ "%}" }}
+
+  {{ "{%" }} block content {{ "%}" }}
+  {{ "{%" }} endblock {{ "%}" }}
+  </div>
+
+  <div class='footer'>
+  {{ "{%" }} block footer {{ "%}" }}
+  {{ "{%" }} endblock {{ "%}" }}
+  </div>
+</body>
+
+
