@@ -7,14 +7,14 @@ import json
 from collections import OrderedDict
 from pyxform import xls2json
 from jinja2 import Environment, PackageLoader
-
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 
 from ...apps import DigDBConfig
         
 PREFERED_LANG_DEFAULT = 'english'
 APP_NAME = DigDBConfig.name
-
+CONFIG_FILENAME = 'digdb.json'
 
 REGEX_VALIDATOR = 'from django.core.validators import RegexValidator'
 MINLENGTH_VALIDATOR = 'from django.core.validators import MinLengthValidator'
@@ -28,6 +28,7 @@ class Command(BaseCommand):
     indexed = {}
     faceted = {}
     order = 0
+    config = {}
     def add_arguments(self, parser):
         parser.add_argument('input', type=str)
         parser.add_argument('--output', type=str)
@@ -44,10 +45,17 @@ class Command(BaseCommand):
         if options['lang']:
             self.lang = options['lang']
 
+        # Read configuration file
+        self.config = json.load(open(join(settings.BASE_DIR, CONFIG_FILENAME)))
+
         # Parse files
         files = [join(options['input'], f) for f in listdir(options['input']) if isfile(join(options['input'], f)) and (splitext(f)[1] == '.xls' or splitext(f)[1] == '.xlsx')]
 
         self.stdout.write(self.style.SUCCESS('Found %d files\n' % len(files)))
+
+        excavation_meta = {
+            'excavation_name':  self.config.get('excavation_name', 'DigDb')    
+            }
 
         for fin in files:
             self.order += 1
@@ -78,7 +86,7 @@ class Command(BaseCommand):
         self.render_template(views_template, 'views.py', output_dir)
         self.render_template(fieldlist_metatemplate, 'field_list.html', join(output_dir, 'jinja2'))
         self.render_template(fielddetails_metatemplate, 'field_details.html', join(output_dir, 'jinja2'))
-        self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'))
+        self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'), excavation_meta=excavation_meta)
         self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'))
         
         self.render_template(models_template, 'models.py', output_dir, static=self.static)
@@ -128,30 +136,35 @@ class Command(BaseCommand):
         for field in form.get('children'):
             self._parse_generic(model, field) 
     
-        # Find thumbnail
-        model['meta']['thumb'] = {
-                'found': False,
-        }
-        for n, f in model['var'].iteritems():
-            if f.get('type') == 'ImageWithThumbsField':
-                model['meta']['thumb'] = {
-                        'type': 'self',
-                        'found': True,
-                        'field': n,
-                }
-                break
+        thumb_group_name, thumb_field_name = self._get_group_and_field('thumbnail_field')
+        if thumb_group_name == None and thumb_field_name is not None:
+            model['meta']['thumb'] = {
+                    'type': 'self',
+                    'found': True,
+                    'field': model['var'][thumb_field_name]['name']
+                    }
+        elif thumb_group_name is not None and thumb_field_name is not None and thumb_group_name in self.sec_models and thumb_field_name in self.sec_models[thumb_group_name]['var']:
+            model['meta']['thumb'] = {
+                    'type': 'rel',
+                    'found': True,
+                    'sec_model': thumb_group_name,
+                    'field': self.sec_models[thumb_group_name]['var'][thumb_field_name]['name']
+                    }
+        id_group_name, id_field_name = self._get_group_and_field('id_field')
+        #id_field = self.config.get('id_field')
+        if id_group_name is None and id_field_name is not None and id_field_name in model['var']:
+            model['meta']['id'] = model['var'][id_field_name]['name']
+        elif id_group_name is not None and id_field_name is not None and id_group_name in self.sec_models and id_field_name in self.sec_models[id_group_name]['var']:
+            model['meta']['id'] = self.sec_models[id_group_name]['var'][id_field_name]['name']
 
-        if not model['meta']['thumb']['found']:
-            for sec_name, sec_val in model['secondary'].iteritems():
-                for n, f in self.sec_models[sec_name]['var'].iteritems():
-                    if f.get('type') == 'ImageWithThumbsField':
-                        model['meta']['thumb'] = {
-                                'type': 'rel',
-                                'found': True,
-                                'sec_model': sec_name,
-                                'field': n,
-                        }
-                        break
+        description_group_name, description_field_name = self._get_group_and_field('description_field')
+        #description_field = self.config.get('description_field')
+        #if description_field and description_field in model['var']:
+        #    model['meta']['description'] = model['var'][description_field]['name']
+        if description_group_name is None and description_field_name is not None and description_field_name in model['var']:
+            model['meta']['description'] = model['var'][description_field_name]['name']
+        elif description_group_name is not None and description_field_name is not None and description_group_name in self.sec_models and description_field_name in self.sec_models[description_group_name]['var']:
+            model['meta']['description'] = self.sec_models[description_group_name]['var'][description_field_name]['name']
         return name, model
 
     def _parse_generic(self, model, field):
@@ -168,12 +181,14 @@ class Command(BaseCommand):
     def _parse_field(self, model, field):
         name, parsed = self._get_field(field)
         if parsed:
+            '''
             if parsed.get('id_field'):
                 model['meta']['id'] = name
                 del parsed['id_field']
             if parsed.get('description_field'):
                 model['meta']['description'] = name
                 del parsed['description_field']
+            '''
             model['var'][name] = parsed
    
     def _parse_group(self, model, group):
@@ -389,6 +404,13 @@ class Command(BaseCommand):
                 'select one': 'models.CharField',
                 'select all that apply': 'MultiSelectField',
                 }.get(ftype, None)
+
+    def _get_group_and_field (self, field):
+        field_name = self.config.get(field)
+        splitted = field_name.split('.')
+        if len(splitted) > 1:
+            return (splitted[0], splitted[1])
+        return (None, splitted[0])
 
     def render_template (self, template, filename, output_dir, **extra_args):
         template_rendered = template.render(class_models=self.models, sec_models=self.sec_models, **extra_args)
