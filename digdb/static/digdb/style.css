@@ -12,8 +12,10 @@ a:active, a:hover, a:link:active, a:link:hover {
 /* Header */
 
 .header {
+  height: 30px;
   padding: 15px;
   background-color: #1D1D1D;
+  overflow: hidden;
 }
 
 .header a {
