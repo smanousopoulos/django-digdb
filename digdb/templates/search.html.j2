@@ -43,7 +43,15 @@
 
   <div class='search-results'>
   {{"{%"}} for result in search {{"%}"}}
-    {{ "{{" }} result.rendered|safe {{ "}}" }}
+    <div class='item'>
+      <a href="{{'{{'}} result.object.get_url() {{'}}'}}">
+        <img class='display' src="{{'{{'}} result.object.get_thumbnail() {{'}}'}}" />
+        <span class='id'>{{'{{'}} result.object.{{ excavation_meta.id or 'id' }} or ''{{'}}'}}</span>
+        <span class='description'>
+          {{'{{'}} result.object.{{ excavation_meta.description or 'description' }} or ''{{'}}'}}
+        </span>
+      </a>
+    </div>
   {{" {% else %} "}}
       <span class='not-found'>Sorry, no results found.</span>
   {{"{% endfor %}"}}

@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Found %d files\n' % len(files)))
 
-        excavation_meta = {
+        self.excavation_meta = {
             'excavation_name':  self.config.get('excavation_name', 'DigDb')    
             }
 
@@ -75,7 +75,6 @@ class Command(BaseCommand):
         base_metatemplate = env.get_template('base.html.j2')
         search_metatemplate = env.get_template('search.html.j2')
         index_text_template = env.get_template('index_text.txt.j2')
-        index_rendered_template = env.get_template('index_rendered.txt.j2')
         fieldlist_metatemplate = env.get_template('field_list.html.j2')
         fielddetails_metatemplate = env.get_template('field_details.html.j2')
 
@@ -86,8 +85,8 @@ class Command(BaseCommand):
         self.render_template(views_template, 'views.py', output_dir)
         self.render_template(fieldlist_metatemplate, 'field_list.html', join(output_dir, 'jinja2'))
         self.render_template(fielddetails_metatemplate, 'field_details.html', join(output_dir, 'jinja2'))
-        self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'), excavation_meta=excavation_meta)
-        self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'))
+        self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'), excavation_meta=self.excavation_meta)
+        self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'), excavation_meta=self.excavation_meta)
         
         self.render_template(models_template, 'models.py', output_dir, static=self.static)
         self.render_template(indexes_template, 'search_indexes.py', output_dir)
@@ -98,7 +97,6 @@ class Command(BaseCommand):
         all_models.update(self.sec_models)
         for name, model in all_models.iteritems():
             self.render_template(index_text_template, '{0}_text.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
-            self.render_template(index_rendered_template, '{0}_rendered.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
  
         if options['debug']:
             with open(join(output_dir, 'out.json'), 'w') as json_out:
@@ -153,18 +151,18 @@ class Command(BaseCommand):
         id_group_name, id_field_name = self._get_group_and_field('id_field')
         #id_field = self.config.get('id_field')
         if id_group_name is None and id_field_name is not None and id_field_name in model['var']:
-            model['meta']['id'] = model['var'][id_field_name]['name']
+            self.excavation_meta['id'] = model['var'][id_field_name]['name']
         elif id_group_name is not None and id_field_name is not None and id_group_name in self.sec_models and id_field_name in self.sec_models[id_group_name]['var']:
-            model['meta']['id'] = self.sec_models[id_group_name]['var'][id_field_name]['name']
+            self.excavation_meta['id'] = self.sec_models[id_group_name]['var'][id_field_name]['name']
 
         description_group_name, description_field_name = self._get_group_and_field('description_field')
         #description_field = self.config.get('description_field')
         #if description_field and description_field in model['var']:
         #    model['meta']['description'] = model['var'][description_field]['name']
         if description_group_name is None and description_field_name is not None and description_field_name in model['var']:
-            model['meta']['description'] = model['var'][description_field_name]['name']
+            self.excavation_meta['description'] = model['var'][description_field_name]['name']
         elif description_group_name is not None and description_field_name is not None and description_group_name in self.sec_models and description_field_name in self.sec_models[description_group_name]['var']:
-            model['meta']['description'] = self.sec_models[description_group_name]['var'][description_field_name]['name']
+            self.excavation_meta['description'] = self.sec_models[description_group_name]['var'][description_field_name]['name']
         return name, model
 
     def _parse_generic(self, model, field):
