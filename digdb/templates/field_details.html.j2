@@ -48,7 +48,10 @@
 
 {{ "{%" }} block content {{ "%}" }}
 <div class='details'>
-  <h1>{{ "{{" }} object._meta.verbose_name {{ "}}" }}</h1> 
+  <h1 class='item-title'>{{ "{{" }} object._meta.verbose_name {{ "}}" }}
+        <span class='item-id'>{{ "{{" }} object.{{ excavation_meta.id or 'id' }} or '' {{ "}}" }}</span>
+  </h1>
+
   <hr/>
     {{ "{%" }} for g, flds in object.get_all_fields_by_fieldsets().iteritems() {{ "%}" }}
     <div class='category'>
