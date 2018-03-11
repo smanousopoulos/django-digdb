@@ -2,10 +2,22 @@
 {% if field.indexed %}
 {% if field.choices %}
 {{"{{"}} object.get_{{name}}_display() {{"}}"}}
-{% elif field.type == 'ForeignKey' %}
-{{"{{"}} object.{{name}} {{"}}"}}
 {% else %}
 {{"{{"}} object.{{name}} {{"}}"}}
 {% endif %}
 {% endif %}
+{% endfor %}
+
+{% for sec_model_name, sec_model in model.secondary.iteritems() %}
+{{ "{%" }} for item in object.{{sec_model}}.all() {{ "%}" }}
+{% for sec_name, sec_field in sec_models[sec_model].var.iteritems() %}
+{% if sec_field.indexed %}
+{% if sec_field.choices %}
+{{"{{"}} item.get_{{sec_name}}_display() {{"}}"}}
+{% elif sec_field.type != 'ForeignKey' %}
+{{"{{"}} item.{{sec_name}} {{"}}"}}
+{% endif %}
+{% endif %}
+{% endfor %}
+{{ "{%" }} endfor {{ "%}" }}
 {% endfor %}
