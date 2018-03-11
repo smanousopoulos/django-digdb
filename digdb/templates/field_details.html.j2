@@ -32,6 +32,20 @@
 {{ "{%" }} endblock {{ "%}" }}
 {{ "{%" }} endif {{ "%}" }}
 
+{{ "{%" }} block sidebar {{ "%}" }}
+<div class='sidebar'>
+  <dl>
+    <h2 class='side-title'>{{ "{{" }} object._meta.verbose_name {{ "}}" }}
+        <span class='id'>{{ "{{" }} object.{{ excavation_meta.id or 'id' }} or '' {{ "}}" }}</span>
+  </h2>
+  <img class='side-thumb' src='{{ "{{" }}  object.get_thumbnail() {{ "}}" }}' />
+  <h3 class='side-description'>
+    {{ "{{" }} object.{{ excavation_meta.description or 'description' }} or '' {{ "}}" }}
+  </h3>
+  </dl>
+</div>
+{{ "{%" }} endblock {{ "%}" }}
+
 {{ "{%" }} block content {{ "%}" }}
 <div class='details'>
   <h1>{{ "{{" }} object._meta.verbose_name {{ "}}" }}</h1> 

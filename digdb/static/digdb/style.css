@@ -2,6 +2,14 @@ body {
   background-color: #fff;
 }
 
+h1, h2, h3, h4, h5 {
+  margin: 20px 10px;
+}
+
+ul, ol {
+  list-style: none;
+}
+
 a, a:link, a:visited, a:link:visited {
   color: #777;
 }
@@ -9,6 +17,7 @@ a, a:link, a:visited, a:link:visited {
 a:active, a:hover, a:link:active, a:link:hover {
   color: #131212!important;
 }
+
 /* Header */
 
 .header {

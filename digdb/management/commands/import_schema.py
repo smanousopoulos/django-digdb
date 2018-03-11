@@ -84,7 +84,7 @@ class Command(BaseCommand):
         self.render_template(urls_template, 'urls.py', output_dir)
         self.render_template(views_template, 'views.py', output_dir)
         self.render_template(fieldlist_metatemplate, 'field_list.html', join(output_dir, 'jinja2'))
-        self.render_template(fielddetails_metatemplate, 'field_details.html', join(output_dir, 'jinja2'))
+        self.render_template(fielddetails_metatemplate, 'field_details.html', join(output_dir, 'jinja2'), excavation_meta=self.excavation_meta)
         self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'), excavation_meta=self.excavation_meta)
         self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'), excavation_meta=self.excavation_meta)
         
