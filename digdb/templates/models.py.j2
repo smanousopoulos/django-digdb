@@ -126,6 +126,8 @@ class FieldHelperMixin(object):
                     value.append(sec_item.get_all_fields())
         elif field.is_relation and field.many_to_one:
             pass
+        elif field.primary_key:
+            pass
         else:
             label = field.verbose_name
             try:
