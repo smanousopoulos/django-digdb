@@ -2,6 +2,7 @@
 from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from django.utils.translation import gettext as _
 
 from .models import *
 
@@ -43,7 +44,7 @@ class {{ model.meta.class }}Admin (ImportExportModelAdmin):
 {% if model.fieldsets %}
     fieldsets = (
         {% for group, fields in model.fieldsets.iteritems() -%} 
-                ("{{ group }}", {
+                (_("{{ group }}"), {
                 "classes": ("collapse",),
                 "fields": {{ fields }},
                 }),

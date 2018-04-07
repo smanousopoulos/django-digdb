@@ -14,14 +14,14 @@
         <div class='logo'>
           <a href='/'>
             <img class='logo-img' src='{{ "{{" }} static("digdb/logo.png") {{ "}}" }}' /> 
-            <span class='logo-text'>{{ excavation_meta.excavation_name }}</span>
+            <span class='logo-text'>{{ "{{" }} _('{{ excavation_meta.excavation_name }}') {{ "}}" }}</span>
           </a>
         </div>
     {{ "{%" }} endblock {{ "%}" }}
 
     <div class='admin-btn'>
       {{ "{%" }} block admin_btn {{ "%}" }} 
-        <a href='/admin'>Admin</a>
+        <a href='/admin'>{{ "{{" }} _('Admin') {{ "}}" }}</a>
       {{ "{%" }} endblock {{ "%}" }}
     </div>
   {{ "{%" }} endblock {{ "%}" }}

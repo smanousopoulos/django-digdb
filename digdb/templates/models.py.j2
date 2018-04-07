@@ -59,7 +59,8 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
 
     class Meta:
 {% if model.meta.label %}
-        verbose_name = "{{ model.meta.label }}"
+        verbose_name = _("{{ model.meta.label }}")
+        verbose_name_plural = _("{{ model.meta.label }}s")
 {% else %}
         pass
 {% endif %}

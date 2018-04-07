@@ -6,7 +6,7 @@
     {{ "{%" }} if facets.fields {{ "%}" }}
     {{ "{%" }} for facet, facet_items in facets.fields.iteritems() {{ "%}" }}
     <dt class='facet-category'>
-      <h3>{{ "{{" }} facet|capitalize {{ "}}" }}</h3>
+      <h3>{{ "{{" }} _(facet|capitalize) {{ "}}" }}</h3>
     </dt>
 
     {{ "{%" }} set selected_facets = request.GET.getlist('selected_facets') {{ "%}" }}
@@ -14,7 +14,7 @@
 
     {{ "{%" }} set exact = facet + '_exact:' + item.0 {{ "%}" }}
     <dd class='facet-item {{ "{{" }} "active" if exact in selected_facets else "" {{ "}}" }}'>
-    <a href='?selected_facets={{ "{{" }} exact {{ "}}" }}'>{{ "{{" }} item.0 {{ "}}" }} ({{ "{{" }} item.1 {{ "}}" }})</a>
+    <a href='?selected_facets={{ "{{" }} exact {{ "}}" }}'>{{ "{{" }} _(item.0) {{ "}}" }} ({{ "{{" }} item.1 {{ "}}" }})</a>
     </dd>
     {{ "{%" }} endfor {{ "%}" }}
     {{ "{%" }} endfor {{ "%}" }}
@@ -22,7 +22,7 @@
     <br />
     {{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
     <div class='clear-btn'>
-      <a href='?'>Clear</a>
+      <a href='?'>{{ "{{" }} _('Clear') {{ "}}" }}</a>
     </div>
     {{ "{%" }} endif {{ "%}" }}
   </dl>
@@ -35,7 +35,7 @@
   {{ "{%" }} block search {{ "%}" }}
   <div class='search'>
     <form method="get" action=".">
-      <input id="id_q" type="text" name="q" placeholder="Search" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> 
+      <input id="id_q" type="text" name="q" placeholder="{{ '{{' }} _('Search') {{ '}}' }}" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> 
       <button type="submit" class="search-btn fa fa-lg fa-search"/>
     </form>
   </div>
@@ -53,7 +53,7 @@
       </a>
     </div>
   {{" {% else %} "}}
-      <span class='not-found'>Sorry, no results found.</span>
+      <span class='not-found'>{{ "{{" }} _('Sorry, no results found.') {{ "}}" }}</span>
   {{"{% endfor %}"}}
   </div>
 

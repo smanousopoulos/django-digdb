@@ -27,7 +27,7 @@
 {{ "{%" }} if request.user.is_authenticated() {{ "%}" }}
 {{ "{%" }} block admin_btn {{ "%}" }}
   <div class='edit-btn'>
-    <a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}'>Edit</a>
+    <a href='{{ "{{" }} object.get_edit_url() {{ "}}" }}'>{{ "{{" }} _('Edit') {{ "}}" }}</a>
   </div>
 {{ "{%" }} endblock {{ "%}" }}
 {{ "{%" }} endif {{ "%}" }}
@@ -55,15 +55,11 @@
   <hr/>
     {{ "{%" }} for g, flds in object.get_all_fields_by_fieldsets().iteritems() {{ "%}" }}
     <div class='category'>
-      <h2>{{ "{{" }} g {{ "}}" }}</h2>
+      <h2>{{ "{{" }} _(g) {{ "}}" }}</h2>
       {{ "{%" }} for f in flds {{ "%}" }}
       {{ "{{" }} decide_field_representation(f) {{ "}}" }} 
       {{ "{%" }} endfor {{ "%}" }}
     </div>
   {{ "{%" }} endfor {{ "%}" }}
-
-  <div class='back-btn'>
-    <a href="/">Back</a>
-  </div>
 </div>
 {{ "{%" }} endblock {{ "%}" }}
