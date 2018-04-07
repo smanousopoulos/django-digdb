@@ -295,7 +295,7 @@ class Command(BaseCommand):
 
         if fld.get('default'):
             if fld.get('type') == 'date' and fld.get('default') == 'today()':
-                var['default'] = 'datetime.now'
+                var['default'] = 'date.today'
             else:
                 var['default'] = fld.get('default')
         

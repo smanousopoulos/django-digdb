@@ -39,6 +39,10 @@ a:active, a:hover, a:link:active, a:link:hover {
   font-size: 24px;
 }
 
+.logo-img {
+  height: 34px;
+}
+
 .admin-btn {
   float: right;
   margin-top: -20px;
