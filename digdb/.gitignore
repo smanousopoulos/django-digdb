@@ -6,3 +6,4 @@ jinja2/
 !__init__.py
 !apps.py
 !tests.py
+!login_required_middleware.py
