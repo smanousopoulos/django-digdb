@@ -42,7 +42,7 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
             {{- 'unique=True, ' if field.unique }}
             {{- 'editable=False, ' if field.editable else '' }}
             {{- 'verbose_name=_("%s"), ' % field.verbose_name if field.verbose_name else '' }}
-            {{- 'upload_to="/",' }}
+            {{- 'upload_to="",' }}
             {{- 'sizes=((200,200),),' }})
 {% else %}
     {{ name }} = {{ field.type }}({{ 'max_length=%s, ' % field.max_length if field.max_length else '' }}
