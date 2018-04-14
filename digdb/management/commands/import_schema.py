@@ -88,9 +88,9 @@ class Command(BaseCommand):
         self.render_template(base_metatemplate, 'base.html', join(output_dir, 'jinja2'), excavation_meta=self.excavation_meta)
         self.render_template(search_metatemplate, 'search.html', join(output_dir, 'jinja2', 'search'), excavation_meta=self.excavation_meta)
         
-        self.render_template(models_template, 'models.py', output_dir, static=self.static)
+        self.render_template(models_template, 'models.py', output_dir, static=self.static, excavation_meta=self.excavation_meta)
         self.render_template(indexes_template, 'search_indexes.py', output_dir)
-        self.render_template(admin_template, 'admin.py', output_dir)
+        self.render_template(admin_template, 'admin.py', output_dir, excavation_meta=self.excavation_meta)
         self.render_template(serializers_template, 'serializers.py', output_dir)
 
         all_models = self.models.copy()

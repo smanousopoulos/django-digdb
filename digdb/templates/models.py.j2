@@ -66,9 +66,16 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
 {% endif %}
     def get_type(self):
         return '{{model_name}}'
-    
+
     def __str__(self):
         return self.get_url()
+ 
+    def __unicode__(self):
+{% if excavation_meta.id %}
+        return self.{{excavation_meta.id}} if self.{{excavation_meta.id}} else self.get_url()
+{% else %}
+        return self.get_url()
+{% endif %}
 
     def get_url(self):
         return '{0}/id/{1}'.format(self.get_type(), self.pk)
@@ -177,7 +184,6 @@ class FieldHelperMixin(object):
 
 # Model classes
 {% for class_name, model in class_models.iteritems() %}
-
 {{ create_model_class(class_name, model) }}
 {% endfor %}
 {% for sec_class_name, sec_model in sec_models.iteritems() %}
