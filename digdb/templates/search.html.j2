@@ -2,6 +2,7 @@
 
 {{ "{%" }} block sidebar {{ "%}" }}
 <div class='sidebar'>
+  <img class='logo-img' src='{{ "{{" }} static("digdb/logo.png") {{ "}}" }}' /> 
   <dl>
     {{ "{%" }} if facets.fields {{ "%}" }}
     {{ "{%" }} for facet, facet_items in facets.fields.iteritems() {{ "%}" }}
