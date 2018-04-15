@@ -36,7 +36,7 @@
   {{ "{%" }} block search {{ "%}" }}
   <div class='search'>
     <form method="get" action=".">
-      <input id="id_q" type="text" name="q" placeholder="{{ '{{' }} _('Search') {{ '}}' }}" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> 
+      <input id="id_q" type="text" name="q" placeholder="{{ '{{' }} _('Search all fields, like ΑΜ/ΚΓ1 or ΑΡΥΒΑΛΛΟΣ') {{ '}}' }}" value="{{ '{{' }}request.GET.q  or ''{{ '}}' }}"> 
       <button type="submit" class="search-btn fa fa-lg fa-search"/>
     </form>
   </div>

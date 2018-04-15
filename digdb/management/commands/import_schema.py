@@ -124,7 +124,7 @@ class Command(BaseCommand):
                     'label': u'{0}'.format(label),
                     'class': '{0}'.format(class_name),
                     'order': self.order,
-                    'primary': True,
+                    'primary': False if name == 'photos' else True,
                     },
                 'secondary': {},
                 'var': OrderedDict(),

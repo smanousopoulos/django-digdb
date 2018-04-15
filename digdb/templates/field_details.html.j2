@@ -12,7 +12,11 @@
     {{ "{%" }} elif field.type == 'unicode' or field.type == 'date' {{ "%}" }}
     <li><b>{{ "{{" }} field.label {{" }}" }}:</b> {{ "{{" }} field.value or '-' {{ "}}" }}</li>
     {{ "{%" }} elif field.type == 'ImageWithThumbsFieldFile' {{ "%}" }}
-    <li><img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="max-width:980px" /></li>
+    <li>
+      <a href="/media/{{ '{{' }} field.value {{ '}}' }}">
+        <img src="/media/{{ '{{' }} field.value {{ '}}' }}" style="max-width:980px" />
+      </a>
+    </li>
     {{ "{%" }} elif field == None {{ "%}" }}
     {{ "{{" }} '' {{ "}}" }}
    {{ "{%" }} else {{ "%}" }}
@@ -36,7 +40,7 @@
 <div class='sidebar'>
   <dl>
     <h2 class='side-title'>{{ "{{" }} object._meta.verbose_name {{ "}}" }}
-        <span class='id'>{{ "{{" }} object.{{ excavation_meta.id or 'id' }} or '' {{ "}}" }}</span>
+        <div class='id'>{{ "{{" }} object.{{ excavation_meta.id or 'id' }} or '' {{ "}}" }}</div>
   </h2>
   <img class='side-thumb' src='{{ "{{" }}  object.get_thumbnail() {{ "}}" }}' />
   <h3 class='side-description'>
