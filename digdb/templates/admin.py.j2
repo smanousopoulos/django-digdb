@@ -29,7 +29,7 @@ class {{ model.meta.class }}Resource (resources.ModelResource):
 @admin.register({{ model.meta.class }})
 class {{ model.meta.class }}Admin (ImportExportModelAdmin):
     resource_class = {{ model.meta.class }}Resource
-{% if excavation_meta.id %}
+{% if model.meta.primary and excavation_meta.id and excavation_meta.description %}
     list_display = ('{{ excavation_meta.id }}', '{{ excavation_meta.description }}')
     ordering = ('id',)
     search_fields = ('{{ excavation_meta.id }}', '{{ excavation_meta.description }}',)

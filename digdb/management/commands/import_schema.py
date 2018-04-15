@@ -123,7 +123,8 @@ class Command(BaseCommand):
                     'name': name,
                     'label': u'{0}'.format(label),
                     'class': '{0}'.format(class_name),
-                    'order': self.order
+                    'order': self.order,
+                    'primary': True,
                     },
                 'secondary': {},
                 'var': OrderedDict(),
@@ -149,16 +150,12 @@ class Command(BaseCommand):
                     'field': self.sec_models[thumb_group_name]['var'][thumb_field_name]['name']
                     }
         id_group_name, id_field_name = self._get_group_and_field('id_field')
-        #id_field = self.config.get('id_field')
         if id_group_name is None and id_field_name is not None and id_field_name in model['var']:
             self.excavation_meta['id'] = model['var'][id_field_name]['name']
         elif id_group_name is not None and id_field_name is not None and id_group_name in self.sec_models and id_field_name in self.sec_models[id_group_name]['var']:
             self.excavation_meta['id'] = self.sec_models[id_group_name]['var'][id_field_name]['name']
 
         description_group_name, description_field_name = self._get_group_and_field('description_field')
-        #description_field = self.config.get('description_field')
-        #if description_field and description_field in model['var']:
-        #    model['meta']['description'] = model['var'][description_field]['name']
         if description_group_name is None and description_field_name is not None and description_field_name in model['var']:
             self.excavation_meta['description'] = model['var'][description_field_name]['name']
         elif description_group_name is not None and description_field_name is not None and description_group_name in self.sec_models and description_field_name in self.sec_models[description_group_name]['var']:

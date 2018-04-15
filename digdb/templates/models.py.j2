@@ -71,8 +71,8 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
         return self.get_url()
  
     def __unicode__(self):
-{% if excavation_meta.id %}
-        return self.{{excavation_meta.id}} if self.{{excavation_meta.id}} else self.get_url()
+{% if model.meta.primary and excavation_meta.id %}
+        return self.{{excavation_meta.id}}
 {% else %}
         return self.get_url()
 {% endif %}
