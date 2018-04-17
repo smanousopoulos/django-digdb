@@ -1,6 +1,10 @@
 {{ "{%" }} extends "base.html" {{ "%}" }}
 
+
 {{ "{%" }} block sidebar {{ "%}" }}
+{{ "{%" }} set query = request.GET.copy() {{ "%}" }}
+{{ "{%" }} do query.setlist('page', [1]) {{ "%}" }}
+
 <div class='sidebar'>
   <img class='logo-img' src='{{ "{{" }} static("digdb/logo.png") {{ "}}" }}' /> 
   <dl>
@@ -14,16 +18,18 @@
     {{ "{%" }} for item in facet_items {{ "%}" }}
 
     {{ "{%" }} set exact = facet + '_exact:' + item.0 {{ "%}" }}
+    {{ "{%" }} do query.setlist('selected_facets', [exact]) {{ "%}" }}
     <dd class='facet-item {{ "{{" }} "active" if exact in selected_facets else "" {{ "}}" }}'>
-    <a href='?selected_facets={{ "{{" }} exact {{ "}}" }}'>{{ "{{" }} _(item.0) {{ "}}" }} ({{ "{{" }} item.1 {{ "}}" }})</a>
+    <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>{{ "{{" }} _(item.0) {{ "}}" }} ({{ "{{" }} item.1 {{ "}}" }})</a>
     </dd>
     {{ "{%" }} endfor {{ "%}" }}
     {{ "{%" }} endfor {{ "%}" }}
     {{ "{%" }} endif {{ "%}" }}
     <br />
     {{ "{%" }} if request.GET.get('q') or request.GET.get('selected_facets') {{ "%}" }}
+    {{ "{%" }} do query.setlist('selected_facets', []) {{ "%}" }}
     <div class='clear-btn'>
-      <a href='?'>{{ "{{" }} _('Clear') {{ "}}" }}</a>
+      <a href='?{{ "{{" }} query.urlencode() {{ "}}" }}'>{{ "{{" }} _('Clear') {{ "}}" }}</a>
     </div>
     {{ "{%" }} endif {{ "%}" }}
   </dl>
