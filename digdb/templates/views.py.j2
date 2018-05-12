@@ -28,7 +28,7 @@ class FacetedSearchView(BaseFacetedSearchView):
             ]
     template_name = 'search/search.html'
     context_object_name = 'search'
-    order_by = 'id_order'
+    order_by = 'modified_order'
 
     def get_queryset(self):
         qs = super(BaseFacetedSearchView, self).get_queryset()

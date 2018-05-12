@@ -10,6 +10,7 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
         category = indexes.CharField(faceted=True)
         category_order = indexes.IntegerField()
         id_order = indexes.IntegerField()
+        modified_order = indexes.DateTimeField(model_attr='modified_date', null=True)
 
 {% for name, field in model.var.iteritems() %}
 {% if field.faceted %}

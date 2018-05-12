@@ -56,6 +56,7 @@ class {{ model.meta.class }} (models.Model, FieldHelperMixin):
             {{- 'validators=%s, ' % field.validators if field.validators else '' }})
 {% endif %}
 {% endfor %}
+    modified_date = models.DateTimeField(auto_now=True, verbose_name=_("Last modified"), null=True)
 
     class Meta:
 {% if model.meta.label %}

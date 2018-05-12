@@ -30,8 +30,8 @@ class {{ model.meta.class }}Resource (resources.ModelResource):
 class {{ model.meta.class }}Admin (ImportExportModelAdmin):
     resource_class = {{ model.meta.class }}Resource
 {% if model.meta.primary and excavation_meta.id and excavation_meta.description %}
-    list_display = ('{{ excavation_meta.id }}', '{{ excavation_meta.description }}')
-    ordering = ('id',)
+    list_display = ('{{ excavation_meta.id }}', '{{ excavation_meta.description }}', 'modified_date')
+    ordering = ('modified_date',)
     search_fields = ('{{ excavation_meta.id }}', '{{ excavation_meta.description }}',)
 {% endif %}
 
