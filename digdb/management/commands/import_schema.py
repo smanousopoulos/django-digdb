@@ -98,7 +98,7 @@ class Command(BaseCommand):
         all_models.update(self.sec_models)
         for name, model in all_models.iteritems():
             self.render_template(index_text_template, '{0}_text.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
-            self.render_template(index_rendered_template, '{0}_rendered.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
+            self.render_template(index_rendered_template, '{0}_rendered.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), excavation_meta=self.excavation_meta)
 
  
         if options['debug']:
