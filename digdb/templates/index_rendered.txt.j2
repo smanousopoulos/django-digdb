@@ -1,0 +1,9 @@
+<div class='item'>
+  <a href="{{'{{'}} object.get_url() {{'}}'}}">
+    <img class='display' src="{{'{{'}}object.get_thumbnail(){{'}}'}}" />
+    <span class='id'>{{'{{'}}object.{{ model.meta.id or 'id' }} or ''{{'}}'}}</span>
+    <span class='description'>
+      {{'{{'}} object.{{ model.meta.description or 'description' }} or ''{{'}}'}}
+    </span>
+  </a>
+</div>

@@ -75,6 +75,7 @@ class Command(BaseCommand):
         base_metatemplate = env.get_template('base.html.j2')
         search_metatemplate = env.get_template('search.html.j2')
         index_text_template = env.get_template('index_text.txt.j2')
+        index_rendered_template = env.get_template('index_rendered.txt.j2')
         fieldlist_metatemplate = env.get_template('field_list.html.j2')
         fielddetails_metatemplate = env.get_template('field_details.html.j2')
 
@@ -97,6 +98,8 @@ class Command(BaseCommand):
         all_models.update(self.sec_models)
         for name, model in all_models.iteritems():
             self.render_template(index_text_template, '{0}_text.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
+            self.render_template(index_rendered_template, '{0}_rendered.txt'.format(''.join(name.split("_"))), join(output_dir, 'jinja2', 'search', 'indexes', APP_NAME), model=model)
+
  
         if options['debug']:
             with open(join(output_dir, 'out.json'), 'w') as json_out:

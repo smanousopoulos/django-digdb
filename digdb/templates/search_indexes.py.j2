@@ -23,6 +23,7 @@ class {{ model.meta.class }}Index (indexes.SearchIndex, indexes.Indexable):
 {% endif %}
 {% endif %}
 {% endfor %}
+        rendered = indexes.CharField(use_template=True, indexed=False)
 
         def get_model(self):
             return {{ model.meta.class }}
